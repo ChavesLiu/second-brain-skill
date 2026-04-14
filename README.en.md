@@ -14,19 +14,11 @@ You curate materials and ask good questions; the LLM handles all the heavy lifti
 
 ## Three-Layer Architecture
 
-```
-┌──────────────────────────────────────────┐
-│  Raw Materials (raw/)  ← You write, LLM reads │
-│  Papers, articles, notes, PDFs, images        │
-├──────────────────────────────────────────┤
-│  Knowledge Base (wiki/) ← LLM writes, you browse │
-│  Summaries, entities, concepts, analyses,      │
-│  cross-references                              │
-├──────────────────────────────────────────┤
-│  Spec (Skill)          ← You and LLM co-evolve │
-│  SCHEMA, workflows, scripts                    │
-└──────────────────────────────────────────┘
-```
+| Layer | Location | Writer | Reader | Contents |
+|:-----:|----------|:------:|:------:|----------|
+| **Raw Materials** | `raw/` | You | LLM | Papers, articles, notes, PDFs, images |
+| **Knowledge Base** | `wiki/` | LLM | You | Summaries, entities, concepts, analyses, cross-references |
+| **Spec** | `Skill` | Co-evolve | LLM | SCHEMA, workflows, scripts |
 
 ## Quick Start
 
