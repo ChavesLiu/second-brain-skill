@@ -96,7 +96,11 @@ This works especially well on the web (OpenClaw) — interact with your knowledg
 
 ## Obsidian Integration
 
-Open the knowledge base directory with [Obsidian](https://obsidian.md/) to browse graph views, backlinks, and page content in real time. Recommended plugins:
+Open the knowledge base directory with [Obsidian](https://obsidian.md/) to browse graph views, backlinks, and page content in real time.
+
+![Obsidian knowledge graph view](docs/images/obsidian.png)
+
+Recommended plugins:
 
 - **Front Matter Title** — Display Chinese titles on graph nodes (pre-configured)
 - **Dataview** — Metadata queries based on frontmatter
