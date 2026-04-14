@@ -1,5 +1,7 @@
 # Second Brain Skill
 
+**中文** | [English](README.en.md)
+
 > 把你的第二大脑接入 Claude Code。基于 [Karpathy LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) 的理念，将个人知识封装成 Skill，让 AI 成为真正理解你上下文的助手。
 
 传统 RAG 是**解释器**——每次提问都从原始文档重新检索推理。Second Brain Skill 是**编译器**——LLM 预先将素材编译为结构化的 wiki，知识随时间**持续复利增长**。

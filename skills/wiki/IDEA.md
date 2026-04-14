@@ -1,4 +1,4 @@
-思路来源:https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+idea:https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
 
 # LLM Wiki
 

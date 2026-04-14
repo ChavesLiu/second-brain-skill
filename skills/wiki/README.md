@@ -1,5 +1,7 @@
 # Second Brain Skill
 
+**中文** | [English](README.en.md)
+
 用 LLM 构建和维护的个人知识库。LLM 负责所有繁重的整理工作 — 摘要、交叉引用、归档、一致性维护 — 你负责挑选素材、提出好问题、思考这一切意味着什么。
 
 > 原始设计理念见 [IDEA.md](IDEA.md)
