@@ -6,7 +6,6 @@ Second Brain 确定性健康检查脚本。
 用法:
     python lint.py --wiki-dir /path/to/kb/wiki --raw-dir /path/to/kb/raw
     python lint.py --wiki-dir /path/to/kb/wiki --raw-dir /path/to/kb/raw --json
-    python lint.py --wiki-dir /path/to/kb/wiki --raw-dir /path/to/kb/raw --fix
 """
 
 import argparse
@@ -297,7 +296,6 @@ def main():
     parser.add_argument("--wiki-dir", required=True, help="wiki 目录的绝对路径")
     parser.add_argument("--raw-dir", required=True, help="raw 目录的绝对路径")
     parser.add_argument("--json", action="store_true", dest="output_json", help="输出 JSON 格式")
-    parser.add_argument("--fix", action="store_true", help="自动修复（暂未实现）")
     args = parser.parse_args()
 
     global WIKI_DIR, RAW_DIR
