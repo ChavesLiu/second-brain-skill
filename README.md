@@ -1,24 +1,68 @@
-# [Second Brain Skill](https://github.com/ChavesLiu/second-brain-skill)
+<div align="center">
 
-**中文** | [English](README.en.md)
+<h1>🧠 Second Brain Skill</h1>
 
-> 把你的第二大脑接入 Claude Code。基于 [Karpathy LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) 的理念，将个人知识封装成 Skill，让 AI 成为真正理解你上下文的助手。
+<p><strong>构建属于你的 AI 第二大脑</strong></p>
 
-传统 RAG 是**解释器**——每次提问都从原始文档重新检索推理。Second Brain Skill 是**编译器**——LLM 预先将素材编译为结构化的 wiki，知识随时间**持续复利增长**。
+<p>
+  灵感来自 <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy 的 LLM Wiki</a>。<br>
+  一个轻量、可扩展的基础框架，让知识库持续积累、关联与演进。
+</p>
 
-你负责挑选素材、提出好问题；LLM 负责所有繁重的整理——摘要、交叉引用、归档、一致性维护。
+<p>
+  <a href="https://github.com/ChavesLiu/second-brain-skill/stargazers"><img src="https://img.shields.io/github/stars/ChavesLiu/second-brain-skill?style=flat-square" alt="GitHub Stars"></a>
+  <a href="https://github.com/ChavesLiu/second-brain-skill/network/members"><img src="https://img.shields.io/github/forks/ChavesLiu/second-brain-skill?style=flat-square" alt="GitHub Forks"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/Claude_Code-Skill-blueviolet?style=flat-square" alt="Claude Code Skill">
+</p>
+
+<p>
+  <strong>中文</strong> |
+  <a href="README.en.md">English</a> |
+  <a href="docs/user-guide.md">使用文档</a>
+</p>
+
+</div>
+
+---
+
+## 项目简介
+
+**Second Brain Skill** 是一个受 Andrej Karpathy [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) 理念启发的开源实现。
+
+它将零散的个人知识转化为**结构化、相互关联、持续演进的 Wiki**，让 AI 助手能够更好地理解并利用你长期积累的上下文。
+
+项目提供一套**简洁、可运行、易扩展的基础框架**，方便开发者快速 Fork、定制，并构建属于自己的第二大脑。
+
+### 从信息检索到知识积累
+
+**传统 RAG 更像解释器；Second Brain Skill 则采用类似编译器的思路。**
+
+传统 RAG 主要在查询时检索相关信息，而 Second Brain Skill 借助 LLM，将原始素材逐步整理为结构化 Wiki，持续维护素材、实体和概念之间的关联。
+
+知识不再只是每次提问时被临时检索和理解，而是能够不断组织、连接和完善。
+
+**RAG 检索知识，LLM Wiki 积累知识。**
+
+你负责挑选素材、提出好问题；LLM 负责繁重的整理工作——摘要、交叉引用、归档和一致性维护。
 
 ## 演示
 
-![演示：help → init → ingest → query 完整流程](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/guide.gif)
+看看原始素材如何逐步转化为结构化、相互关联的知识库。
+
+![演示：help → init → ingest → query 完整流程](docs/images/guide.gif)
 
 ## 三层架构
+
+Second Brain Skill 将原始素材、结构化知识和运行规范划分为三个层次。
 
 | 层 | 位置 | 谁写 | 谁读 | 包含内容 |
 |:--:|------|:----:|:----:|----------|
 | **原始素材** | `raw/` | 你 | LLM | 论文、文章、笔记、PDF、图片 |
 | **知识库** | `wiki/` | LLM | 你 | 摘要、实体、概念、分析、交叉引用 |
 | **规范** | `Skill` | 共同演进 | LLM | SCHEMA、workflows、scripts |
+
+这种分层设计既能保留原始素材，又能让知识库和运行规范独立演进。
 
 ## 快速开始
 
@@ -28,7 +72,7 @@
 # 克隆仓库
 git clone https://github.com/ChavesLiu/second-brain-skill.git
 
-# 将 skill 复制到 Claude Code 全局目录
+# 将 Skill 复制到 Claude Code 全局目录
 cp -r second-brain-skill/skills/wiki ~/.claude/skills/wiki
 
 # 安装依赖
@@ -37,35 +81,42 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 
 ### 2. 初始化知识库
 
-```
+```text
 /wiki init
 ```
 
-按提示选择路径、名称和语言（zh/en），即可创建知识库。
+按提示选择知识库路径、名称和语言（`zh` / `en`），即可创建知识库。
 
 ### 3. 收录第一份素材
 
 ```bash
 # 将素材放入 raw/ 目录
 cp my-article.md ~/my-kb/raw/
+```
 
-# 收录
+然后执行：
+
+```text
 /wiki ingest
 ```
 
-LLM 自动阅读素材、创建摘要页、拆分实体和概念页、维护交叉引用。一次收录可能触发 10-15 个页面的创建或更新。
+LLM 自动阅读素材、生成摘要页、提取实体和概念，并维护交叉引用。
+
+根据素材内容，一次收录可能创建或更新 10–15 个相互关联的 Wiki 页面。
 
 ### 4. 查询知识
 
-```
+```text
 /wiki query Memex 是什么？
 ```
 
-也可以直接用自然语言：
+也可以直接用自然语言提问：
 
-```
+```text
 对比一下 RAG 和 Wiki 模式的优劣
 ```
+
+LLM 会基于已积累的知识库回答问题，并关联相关信息。
 
 ## 核心命令
 
@@ -74,82 +125,108 @@ LLM 自动阅读素材、创建摘要页、拆分实体和概念页、维护交�
 | `/wiki init` | 创建并注册新知识库 |
 | `/wiki ingest` | 收录新素材（支持 Markdown、PDF、图片） |
 | `/wiki query <问题>` | 基于知识库回答问题 |
-| `/wiki lint` | 知识库健康检查 |
-| `/wiki wipe` | 删除/重置（有回收站，可恢复） |
-| `/wiki test` | 自动化测试 |
+| `/wiki lint` | 检查知识库健康状态和一致性 |
+| `/wiki wipe` | 删除或重置知识（可通过回收站恢复） |
+| `/wiki test` | 运行自动化测试 |
 
-所有命令也支持**自然语言**触发——"收录这篇文章"、"检查下知识库"、"整理 XX 的信息"，LLM 会自动识别意图。
+所有命令也支持**自然语言触发**。
+
+例如，直接说“收录这篇文章”“检查下知识库”或“整理 XX 的信息”，无需记忆具体命令。
 
 ## 自然语言模式
 
-你不需要记住任何命令。Skill 会自动判断你的意图：
+你不需要记住任何命令。Skill 会自动识别意图并执行对应工作流。
 
 | 你说的话 | 执行的操作 |
 |---------|-----------|
-| "收录这篇文章" | ingest |
-| "Memex 是什么？" | query |
-| "对比 RAG 和 Wiki 模式" | query |
-| "回答要标注来源" | 记录偏好到 conventions.md |
-| "检查下知识库" | lint |
+| “收录这篇文章” | 收录素材 |
+| “Memex 是什么？” | 查询知识库 |
+| “对比 RAG 和 Wiki 模式” | 检索并综合相关知识 |
+| “回答要标注来源” | 将偏好记录到 `conventions.md` |
+| “检查下知识库” | 执行知识库健康检查 |
 
-这在 Web 端（OpenClaw）中体验尤其好——像聊天一样操作知识库。
+这种方式也适用于 OpenClaw 等对话式交互界面，让你像聊天一样操作知识库。
 
 ## Obsidian 集成
 
-用 [Obsidian](https://obsidian.md/) 打开知识库目录，即可实时浏览图谱视图、反向链接和页面内容。
+Second Brain Skill 生成基于 Markdown 的知识库，可以直接使用 [Obsidian](https://obsidian.md/) 打开。
 
-![Obsidian 知识图谱视图](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/obsidian.png)
+你可以探索：
+
+- **知识图谱** — 可视化实体与概念之间的关系。
+- **反向链接** — 在相互关联的知识页面间快速跳转。
+- **结构化笔记** — 浏览摘要、分析和素材引用。
+
+![Obsidian 知识图谱视图](docs/images/obsidian.png)
 
 推荐插件：
 
-- **Front Matter Title** — 图谱节点显示中文标题（项目已预置配置）
-- **Dataview** — 基于 frontmatter 的元数据查询
-- **Web Clipper** — 浏览器一键裁剪网页文章到 raw/
+- **Front Matter Title** — 图谱节点显示中文标题（项目已预置配置）。
+- **Dataview** — 基于 frontmatter 查询元数据。
+- **Web Clipper** — 将网页文章一键裁剪到 `raw/`。
 
 ## OpenClaw（Web 端）
 
-在 OpenClaw 记忆中配置知识库路径后，可以实现**零摩擦收录**——发一个微信公众号链接，LLM 自动下载、收录、整理，全程无需额外指令。
+Second Brain Skill 也可以与 OpenClaw 集成，实现对话式知识管理。
 
-![OpenClaw 自动收录演示](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
+在 OpenClaw 记忆中配置知识库路径后，可以实现**零摩擦知识收录**。
 
-详见 [使用手册 — 接入 OpenClaw](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/user-guide.en.md)。
+例如，发送一个微信公众号文章链接，LLM 就可以自动下载、收录和整理内容，无需额外命令。
+
+![OpenClaw 自动收录演示](docs/images/openclaw-wiki.gif)
+
+详见 [使用手册 — 接入 OpenClaw](docs/user-guide.md#接入-openclaw)。
 
 ## 知识库目录结构
 
-```
+```text
 ~/my-kb/                        # 知识库实例
-├── raw/                        #   原始素材（你写入，LLM 只读）
-│   ├── assets/                 #     图片和附件
-│   └── *.md / *.pdf            #     素材文件
-└── wiki/                       #   LLM 生成和维护的知识库
-    ├── index.md                #     内容索引
-    ├── log.md                  #     操作日志
-    ├── overview.md             #     总览页
-    ├── conventions.md          #     使用约定（你的操作偏好）
-    ├── sources/                #     素材摘要页
-    ├── entities/               #     实体页（人物、组织、工具）
-    ├── concepts/               #     概念页（理论、方法、模式）
-    └── analyses/               #     分析页（对比、综合论述）
+├── raw/                        # 原始素材（你写入，LLM 只读）
+│   ├── assets/                 # 图片和附件
+│   └── *.md / *.pdf            # 素材文件
+└── wiki/                       # LLM 生成和维护的知识库
+    ├── index.md                # 内容索引
+    ├── log.md                  # 操作日志
+    ├── overview.md             # 总览页
+    ├── conventions.md          # 使用约定和偏好
+    ├── sources/                # 素材摘要页
+    ├── entities/               # 实体页（人物、组织、工具）
+    ├── concepts/               # 概念页（理论、方法、模式）
+    └── analyses/               # 分析页（对比、综合论述）
 ```
 
 ## 适用场景
 
-- **研究** — 持续阅读论文，逐步构建领域知识图谱
-- **读书** — 按章节收录，自动构建角色、主题、情节的关联网络
-- **个人成长** — 日记、文章、播客笔记，构建自我认知的结构化图景
-- **竞品分析** — 持续跟踪竞品动态，自动维护对比分析
-- **团队知识库** — 收录会议纪要、项目文档，LLM 自动维护
+- **研究** — 持续收录论文，逐步构建相互关联的领域知识库。
+- **读书** — 按章节处理书籍，自动关联人物、主题和概念。
+- **个人成长** — 整理日记、文章和播客笔记，构建结构化的个人知识图景。
+- **竞品分析** — 持续跟踪竞品动态，维护不断演进的对比与分析。
+- **团队知识库** — 收录会议纪要和项目文档，由 LLM 维护结构化知识。
+
+## Fork 并构建自己的版本
+
+Second Brain Skill 的定位是一个**起点，而不是最终产品**。
+
+项目希望降低 Karpathy LLM Wiki 理念的实践门槛，让更多开发者能够轻松探索、实验和扩展。
+
+你可以 Fork 本仓库，根据自己的需求调整知识结构、工作流和使用规范。
+
+无论是个人研究助手、垂直领域知识库，还是团队知识系统，都可以从这个基础框架开始构建。
+
+**Fork、定制，打造属于自己的第二大脑。**
+
+欢迎反馈、贡献代码和分享新的想法！
 
 ## 文档
 
-- **[使用手册](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/user-guide.md)** — 完整的安装配置、功能详解、Obsidian 集成、OpenClaw 接入
-- **[设计理念](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/skills/wiki/IDEA.md)** — Karpathy LLM Wiki 的原始构想
-- **[Skill 技术文档](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/skills/wiki/README.md)** — 页面规范、工作流详解、目录结构
+- **[使用手册](docs/user-guide.md)** — 安装配置、功能详解、Obsidian 集成及 OpenClaw 接入。
+- **[设计理念](skills/wiki/IDEA.md)** — 受 Karpathy LLM Wiki 启发的背景与设计原则。
+- **[Skill 技术文档](skills/wiki/README.md)** — 页面规范、工作流和目录结构。
 
 ## 致谢
 
-- [Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — LLM Wiki 的原始理念
-- [Vannevar Bush](https://en.wikipedia.org/wiki/Vannevar_Bush) — 1945 年提出 Memex 构想，个人知识管理的思想源头
+- [Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — 提出启发本项目的 LLM Wiki 理念。
+- [Vannevar Bush](https://en.wikipedia.org/wiki/Vannevar_Bush) — 于 1945 年提出 Memex 构想，是关联式个人知识管理的重要思想源头。
 
 ## Star History
 
@@ -157,4 +234,4 @@ LLM 自动阅读素材、创建摘要页、拆分实体和概念页、维护交�
 
 ## License
 
-MIT
+本项目采用 [MIT License](LICENSE) 开源许可证。
