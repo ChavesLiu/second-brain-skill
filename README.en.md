@@ -19,6 +19,10 @@
 <p>
   <a href="README.md">中文</a> |
   <strong>English</strong> |
+  <a href="docs/i18n/README.ja.md">日本語</a> |
+  <a href="docs/i18n/README.es.md">Español</a> |
+  <a href="docs/i18n/README.fr.md">Français</a> |
+  <a href="docs/i18n/README.ko.md">한국어</a> |
   <a href="docs/user-guide.en.md">Documentation</a> |
   <a href="#quick-start">Quick Start</a>
 </p>
@@ -86,7 +90,7 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 /wiki init
 ```
 
-Follow the prompts to choose a path, name, and language (`zh` / `en`) for your knowledge base.
+Follow the prompts to choose a path, name, and content language for your knowledge base. The initialization workflow currently defines `zh` (Chinese) and `en` (English) for generated wiki content; translated READMEs do not add support for other content languages.
 
 ### 3. Ingest Your First Material
 
@@ -123,12 +127,15 @@ The LLM uses your accumulated knowledge base to answer questions and connect rel
 
 | Command | Function |
 |---------|----------|
+| `/wiki help` | Show available commands and usage instructions |
 | `/wiki init` | Create and register a new knowledge base |
 | `/wiki ingest` | Ingest new materials (Markdown, PDF, images) |
 | `/wiki query <question>` | Answer questions based on the knowledge base |
 | `/wiki lint` | Check knowledge base health and consistency |
-| `/wiki wipe` | Delete or reset knowledge (recoverable via recycle bin) |
+| `/wiki wipe` | Delete or reset wiki content pages (moved to `wiki/.trash/`; `raw/` is unchanged) |
 | `/wiki test` | Run automated tests |
+
+Use `/wiki wipe restore` to recover deleted or reset content pages. `/wiki wipe empty-trash` permanently empties the recycle bin; afterward, only content already saved in Git history can be recovered through Git.
 
 All commands also support **natural language triggers**.
 
@@ -170,9 +177,9 @@ Recommended plugins:
 
 Second Brain Skill can also be integrated with OpenClaw for conversational knowledge management.
 
-After configuring the knowledge base path in OpenClaw's memory, you can achieve **zero-friction knowledge ingestion**.
+Give OpenClaw access to the Skill and knowledge base, then configure the knowledge base path and auto-ingest rules in its Memory to ingest materials conversationally without typing a command each time.
 
-For example, send a WeChat article link, and the LLM can automatically download, ingest, and organize the content without additional commands.
+For example, when you send a WeChat article link, the LLM can attempt to download it, save it to `raw/`, and ingest it if the OpenClaw environment provides the required browser or download tools (such as Playwright). This requires additional setup; configuring the knowledge base path alone is not sufficient.
 
 ![OpenClaw auto-ingest demo](docs/images/openclaw-wiki.gif)
 
@@ -221,7 +228,7 @@ Contributions, feedback, and new ideas are welcome!
 ## Documentation
 
 - **[User Guide](docs/user-guide.en.md)** — Installation, features, Obsidian integration, and OpenClaw setup.
-- **[Design Philosophy](skills/wiki/IDEA.md)** — Background and design principles inspired by Karpathy's LLM Wiki.
+- **[Design Philosophy](skills/wiki/IDEA.md)** — Background and design principles inspired by Karpathy's LLM Wiki (in Chinese).
 - **[Skill Technical Docs](skills/wiki/README.en.md)** — Page specifications, workflows, and directory structure.
 
 ## Acknowledgments

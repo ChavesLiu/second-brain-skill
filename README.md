@@ -19,6 +19,10 @@
 <p>
   <strong>中文</strong> |
   <a href="README.en.md">English</a> |
+  <a href="docs/i18n/README.ja.md">日本語</a> |
+  <a href="docs/i18n/README.es.md">Español</a> |
+  <a href="docs/i18n/README.fr.md">Français</a> |
+  <a href="docs/i18n/README.ko.md">한국어</a> |
   <a href="docs/user-guide.md">使用文档</a>
 </p>
 
@@ -85,7 +89,7 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 /wiki init
 ```
 
-按提示选择知识库路径、名称和语言（`zh` / `en`），即可创建知识库。
+按提示选择知识库路径、名称和内容语言，即可创建知识库。当前初始化工作流定义的 Wiki 内容语言为 `zh`（中文）和 `en`（英文）；README 的翻译版本不代表新增知识库生成语言支持。
 
 ### 3. 收录第一份素材
 
@@ -122,12 +126,15 @@ LLM 会基于已积累的知识库回答问题，并关联相关信息。
 
 | 命令 | 功能 |
 |------|------|
+| `/wiki help` | 查看命令列表和使用说明 |
 | `/wiki init` | 创建并注册新知识库 |
 | `/wiki ingest` | 收录新素材（支持 Markdown、PDF、图片） |
 | `/wiki query <问题>` | 基于知识库回答问题 |
 | `/wiki lint` | 检查知识库健康状态和一致性 |
-| `/wiki wipe` | 删除或重置知识（可通过回收站恢复） |
+| `/wiki wipe` | 删除或重置 Wiki 内容页面（移入 `wiki/.trash/`，不修改 `raw/`） |
 | `/wiki test` | 运行自动化测试 |
+
+删除或重置的内容页面可用 `/wiki wipe restore` 恢复；`/wiki wipe empty-trash` 会永久清空回收站，之后只有已纳入 Git 历史的内容才能通过 Git 恢复。
 
 所有命令也支持**自然语言触发**。
 
@@ -169,9 +176,9 @@ Second Brain Skill 生成基于 Markdown 的知识库，可以直接使用 [Obsi
 
 Second Brain Skill 也可以与 OpenClaw 集成，实现对话式知识管理。
 
-在 OpenClaw 记忆中配置知识库路径后，可以实现**零摩擦知识收录**。
+让 OpenClaw 能访问 Skill 和知识库，并在 Memory 中配置知识库路径及自动收录规则后，可以通过对话收录素材，无需每次输入命令。
 
-例如，发送一个微信公众号文章链接，LLM 就可以自动下载、收录和整理内容，无需额外命令。
+例如，发送一个微信公众号文章链接；如果 OpenClaw 环境具备所需的浏览器或下载工具（如 Playwright），LLM 可以尝试下载内容、保存到 `raw/` 并执行收录。这需要额外配置，并非只设置知识库路径就能开箱即用。
 
 ![OpenClaw 自动收录演示](docs/images/openclaw-wiki.gif)
 
