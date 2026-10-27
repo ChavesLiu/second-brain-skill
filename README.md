@@ -1,4 +1,4 @@
-# Second Brain Skill
+# [Second Brain Skill](https://github.com/ChavesLiu/second-brain-skill)
 
 **中文** | [English](README.en.md)
 
@@ -10,7 +10,7 @@
 
 ## 演示
 
-![演示：help → init → ingest → query 完整流程](docs/images/guide.gif)
+![演示：help → init → ingest → query 完整流程](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/guide.gif)
 
 ## 三层架构
 
@@ -98,7 +98,7 @@ LLM 自动阅读素材、创建摘要页、拆分实体和概念页、维护交�
 
 用 [Obsidian](https://obsidian.md/) 打开知识库目录，即可实时浏览图谱视图、反向链接和页面内容。
 
-![Obsidian 知识图谱视图](docs/images/obsidian.png)
+![Obsidian 知识图谱视图](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/obsidian.png)
 
 推荐插件：
 
@@ -110,9 +110,9 @@ LLM 自动阅读素材、创建摘要页、拆分实体和概念页、维护交�
 
 在 OpenClaw 记忆中配置知识库路径后，可以实现**零摩擦收录**——发一个微信公众号链接，LLM 自动下载、收录、整理，全程无需额外指令。
 
-![OpenClaw 自动收录演示](docs/images/openclaw-wiki.gif)
+![OpenClaw 自动收录演示](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 
-详见 [使用手册 — 接入 OpenClaw](docs/user-guide.md#接入-openclawclaude-code-web)。
+详见 [使用手册 — 接入 OpenClaw](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/user-guide.en.md)。
 
 ## 知识库目录结构
 
@@ -142,14 +142,18 @@ LLM 自动阅读素材、创建摘要页、拆分实体和概念页、维护交�
 
 ## 文档
 
-- **[使用手册](docs/user-guide.md)** — 完整的安装配置、功能详解、Obsidian 集成、OpenClaw 接入
-- **[设计理念](skills/wiki/IDEA.md)** — Karpathy LLM Wiki 的原始构想
-- **[Skill 技术文档](skills/wiki/README.md)** — 页面规范、工作流详解、目录结构
+- **[使用手册](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/user-guide.md)** — 完整的安装配置、功能详解、Obsidian 集成、OpenClaw 接入
+- **[设计理念](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/skills/wiki/IDEA.md)** — Karpathy LLM Wiki 的原始构想
+- **[Skill 技术文档](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/skills/wiki/README.md)** — 页面规范、工作流详解、目录结构
 
 ## 致谢
 
 - [Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — LLM Wiki 的原始理念
 - [Vannevar Bush](https://en.wikipedia.org/wiki/Vannevar_Bush) — 1945 年提出 Memex 构想，个人知识管理的思想源头
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=chavesliu/second-brain-skill&type=date&legend=top-left)](https://www.star-history.com/?repos=chavesliu%2Fsecond-brain-skill&type=date&legend=top-left)
 
 ## License
 
