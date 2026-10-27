@@ -1,6 +1,6 @@
-# Second Brain Skill
+# [Second Brain Skill](https://github.com/ChavesLiu/second-brain-skill)
 
-[中文](README.md) | **English**
+[中文](https://github.com/ChavesLiu/second-brain-skill/blob/main/README.md) | **English**
 
 > Plug your second brain into Claude Code. Inspired by [Karpathy's LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), this project packages personal knowledge as a Skill, turning AI into an assistant that truly understands your context.
 
@@ -10,7 +10,7 @@ You curate materials and ask good questions; the LLM handles all the heavy lifti
 
 ## Demo
 
-![Demo: help → init → ingest → query full workflow](docs/images/guide.gif)
+![Demo: help → init → ingest → query full workflow](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/guide.gif)
 
 ## Three-Layer Architecture
 
@@ -98,7 +98,7 @@ This works especially well on the web (OpenClaw) — interact with your knowledg
 
 Open the knowledge base directory with [Obsidian](https://obsidian.md/) to browse graph views, backlinks, and page content in real time.
 
-![Obsidian knowledge graph view](docs/images/obsidian.png)
+![Obsidian knowledge graph view](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/obsidian.png)
 
 Recommended plugins:
 
@@ -110,9 +110,9 @@ Recommended plugins:
 
 After configuring the knowledge base path in OpenClaw's memory, you can achieve **zero-friction ingestion** — send a WeChat article link and the LLM automatically downloads, ingests, and organizes it, with no additional commands needed.
 
-![OpenClaw auto-ingest demo](docs/images/openclaw-wiki.gif)
+![OpenClaw auto-ingest demo](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 
-See [User Guide — OpenClaw Integration](docs/user-guide.en.md#openclaw-integration) for details.
+See [User Guide — OpenClaw Integration](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/user-guide.en.md) for details.
 
 ## Knowledge Base Directory Structure
 
@@ -142,15 +142,20 @@ See [User Guide — OpenClaw Integration](docs/user-guide.en.md#openclaw-integra
 
 ## Documentation
 
-- **[User Guide](docs/user-guide.en.md)** — Full installation, feature guide, Obsidian integration, OpenClaw setup
-- **[Design Philosophy](skills/wiki/IDEA.md)** — Karpathy's original LLM Wiki vision
-- **[Skill Technical Docs](skills/wiki/README.en.md)** — Page specs, workflow details, directory structure
+- **[User Guide](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/user-guide.md)** — Full installation, feature guide, Obsidian integration, OpenClaw setup
+- **[Design Philosophy](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/skills/wiki/IDEA.md)** — Karpathy's original LLM Wiki vision
+- **[Skill Technical Docs](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/skills/wiki/README.md)** — Page specs, workflow details, directory structure
 
 ## Acknowledgments
 
 - [Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — Original LLM Wiki concept
 - [Vannevar Bush](https://en.wikipedia.org/wiki/Vannevar_Bush) — Proposed the Memex concept in 1945, the intellectual origin of personal knowledge management
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=chavesliu/second-brain-skill&type=date&legend=top-left)](https://www.star-history.com/?repos=chavesliu%2Fsecond-brain-skill&type=date&legend=top-left)
+
 ## License
 
 MIT
+
