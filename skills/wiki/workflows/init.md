@@ -2,11 +2,19 @@
 
 创建并注册一个新的知识库。
 
+## 语言分工
+
+- `UI_LANG`：本流程中所有提问、选项说明、确认和最终报告使用该语言。
+- `INIT_LANG`：由路由提供，固定等于首次/当前 `UI_LANG`，作为新知识库的 `KB_LANG` 写入注册表。
+- init 路由结果中 `kb = null`，本流程不得读取或解引用 `kb.root`、`kb.wiki`、`kb.raw`、`kb.lang`。
+- 不再询问第三个“Wiki 页面语言”问题；新库页面语言默认使用 `INIT_LANG`。
+- 下方中文模板只表示内容结构。实际创建 `index.md`、`log.md`、`overview.md`、`conventions.md` 时，面向人阅读的标题、说明、摘要、日志均按 `INIT_LANG` 自然生成，不能把中文模板逐字输出到非中文库。
+
 ## 工作流程
 
 ### 1. 收集信息
 
-使用 AskUserQuestion 询问以下信息：
+使用 AskUserQuestion 只询问以下两个信息，题干、选项和说明使用 `UI_LANG`：
 
 ```json
 {
@@ -29,23 +37,16 @@
         {"label": "读书笔记", "description": ""},
         {"label": "工作知识库", "description": ""}
       ]
-    },
-    {
-      "question": "Wiki 页面使用什么语言撰写？",
-      "header": "语言",
-      "multiSelect": false,
-      "options": [
-        {"label": "zh（中文）", "description": "用中文撰写 wiki 内容，专有名词保留英文原文"},
-        {"label": "en（English）", "description": "Write all wiki content in English"}
-      ]
     }
   ]
 }
 ```
 
+如果 `UI_LANG` 不是中文，必须按含义翻译上面问题和选项，但保留路径名 `raw/`、`wiki/` 不变。
+
 ### 2. 生成知识库 ID
 
-从名称生成 slug 作为 ID（如 "AI 研究" → "ai-research"）。如果 registries.json 中已存在该 ID，提示用户修改。
+从名称生成英文 slug 作为 ID（如 “AI 研究” → `ai-research`）。如果 `registries.json` 中已存在该 ID，用 `UI_LANG` 提示用户修改。
 
 ### 3. 创建目录结构
 
@@ -61,9 +62,11 @@ mkdir -p <path>/wiki/analyses
 
 ### 4. 初始化 wiki 核心文件
 
-创建以下文件（如果不存在）：
+创建以下文件（如果不存在）。所有 human-readable 文本使用 `INIT_LANG`；文件名和目录名保持英文。
 
 #### `<path>/wiki/index.md`
+
+结构模板：
 
 ```markdown
 # Wiki Index
@@ -85,7 +88,11 @@ mkdir -p <path>/wiki/analyses
 ## Analyses
 ```
 
+非中文 `INIT_LANG` 时，说明文字、链接显示文本和摘要自然翻译；标题 `Sources`、`Entities`、`Concepts`、`Analyses` 可保持英文分类名以稳定结构。
+
 #### `<path>/wiki/log.md`
+
+结构模板：
 
 ```markdown
 # Wiki Log
@@ -98,9 +105,11 @@ mkdir -p <path>/wiki/analyses
 - 初始化 index.md、log.md、overview.md、conventions.md
 ```
 
-（YYYY-MM-DD 替换为当天日期）
+（YYYY-MM-DD 替换为当天日期；日志正文按 `INIT_LANG` 生成。）
 
 #### `<path>/wiki/overview.md`
+
+结构模板：
 
 ```markdown
 ---
@@ -133,7 +142,11 @@ tags: [overview]
 - [YYYY-MM-DD] 知识库初始化
 ```
 
+`title`、`aliases`、tags、正文标题、表格字段和活动描述均按 `INIT_LANG` 生成；文件名仍为 `overview.md`。
+
 #### `<path>/wiki/conventions.md`
+
+结构模板：
 
 ```markdown
 ---
@@ -166,9 +179,11 @@ tags: [meta]
 （暂无）
 ```
 
+`Query`、`Ingest`、`Lint` 可保持英文分类名；`通用` 可按 `INIT_LANG` 翻译为 General 等自然表达。其他可读文本按 `INIT_LANG` 生成。
+
 ### 5. 注册到 registries.json
 
-读取 skill 目录下的 `registries.json`，添加新条目：
+读取 skill 目录下的 `registries.json`，添加新条目，并将新知识库设为默认：
 
 ```json
 {
@@ -177,18 +192,18 @@ tags: [meta]
     "<new-id>": {
       "name": "用户输入的名称",
       "path": "/absolute/path/to/kb",
-      "language": "zh",
+      "language": "INIT_LANG",
       "created": "YYYY-MM-DD"
     }
   }
 }
 ```
 
-将 `default` 设为新创建的知识库 ID。
+`language` 必须使用 `INIT_LANG` 的实际值（zh/en/ja/es/fr/ko），不得再次询问语言。
 
 ### 6. 处理已存在目录
 
-如果目标路径已存在且包含 `raw/` 和 `wiki/` 子目录：
+如果目标路径已存在且包含 `raw/` 和 `wiki/` 子目录，用 `UI_LANG` 询问如何处理：
 
 ```json
 {
@@ -207,12 +222,14 @@ tags: [meta]
 
 ### 7. 输出结果
 
-```
-✅ 知识库已创建并注册
+最终报告使用 `UI_LANG`，语言字段显示实际 `INIT_LANG`：
+
+```text
+知识库已创建并注册
 
   名称: <name>
   路径: <path>
-  语言: zh
+  语言: <INIT_LANG>
   ID:   <id>
 
   目录结构:
@@ -223,3 +240,5 @@ tags: [meta]
     1. 将素材文件放入 <path>/raw/
     2. 执行 /wiki ingest 开始收录
 ```
+
+非中文 `UI_LANG` 时自然翻译报告说明，不改变命令 `/wiki ingest`、路径和 ID。

@@ -21,13 +21,17 @@
 /wiki init
 ```
 
-按提示输入知识库路径、名称和语言。支持多个知识库，多库时会自动询问操作哪个。
+首次使用任意 `/wiki` 功能时，先选择一次默认交互语言（`zh` / `en` / `ja` / `es` / `fr` / `ko`），该值写入本 Skill 目录的 `settings.json`。以后跨会话读取，不再重复询问。
+
+`/wiki init` 只需输入知识库路径和名称。新知识库的内容语言默认使用当前交互语言；已有知识库保留 `registries.json` 中的 `language`，不会自动翻译；缺少 `language` 的旧库按 `zh` 处理。支持多个知识库，多库时会自动询问操作哪个。
 
 ### 3. 可用命令
 
 | 命令 | 功能 |
 |------|------|
 | `/wiki init` | 创建并注册新知识库 |
+| `/wiki language` | 查看当前交互语言 |
+| `/wiki language <zh|en|ja|es|fr|ko>` | 修改界面交互语言，并作为以后新知识库的默认内容语言 |
 | `/wiki ingest` | 收录新素材到知识库 |
 | `/wiki query <问题>` | 基于知识库回答问题 |
 | `/wiki lint` | 对知识库进行健康检查 |
@@ -60,6 +64,7 @@ Skill 安装在全局位置，知识库目录由用户通过 `/wiki init` 创建
 ├── README.md                 #   本文件
 ├── IDEA.md                   #   原始设计理念
 ├── registries.json           #   知识库注册表
+├── settings.json             #   本地交互语言设置（首次使用后生成，可不入库）
 ├── workflows/                #   各子命令的详细工作流
 └── scripts/                  #   辅助脚本（lint.py 等）
 
@@ -83,7 +88,7 @@ Skill 安装在全局位置，知识库目录由用户通过 `/wiki init` 创建
 |----|------|------|------|------|
 | 原始素材 | `<kb>/raw/` | 你 | LLM | 不可变的信息源，LLM 只读不写 |
 | 知识库 | `<kb>/wiki/` | LLM | 你 | LLM 完全拥有，你通过 Obsidian 浏览 |
-| 规范 | `~/.claude/skills/wiki/` | 你 + LLM | LLM | Skill 代码、Schema、注册表 |
+| 规范 | `~/.claude/skills/wiki/` | 你 + LLM | LLM | Skill 代码、Schema、注册表、本地 settings |
 
 ---
 
@@ -184,6 +189,14 @@ python ~/.claude/skills/wiki/scripts/lint.py --wiki-dir <kb>/wiki --raw-dir <kb>
 
 ---
 
+
+### 语言设置
+
+- `/wiki language`：查看当前交互语言。
+- `/wiki language fr`：将 UI 交互和回答切换为法语，并把法语作为以后新建知识库的默认内容语言。
+- 该命令不会修改已有知识库的 `registries.json.language`，也不会翻译已有页面。
+- `settings.json` 是本地环境设置；全局 Claude Code 安装、OpenClaw 环境或不同机器各自保存。更新或复制 Skill 时不要覆盖个人 `settings.json`。
+
 ## 页面规范
 
 ### Frontmatter
@@ -193,11 +206,11 @@ python ~/.claude/skills/wiki/scripts/lint.py --wiki-dir <kb>/wiki --raw-dir <kb>
 ```yaml
 ---
 title: 页面标题
-aliases: [中文别名]              # Front Matter Title 插件显示用
+aliases: [页面别名]              # Front Matter Title 插件显示用，跟随知识库语言
 type: source | entity | concept | analysis
 created: 2026-04-13
 updated: 2026-04-13
-tags: [标签1, 标签2]
+tags: [标签1, 标签2]             # 新库标签跟随 KB 语言；旧标签保持原习惯
 sources: [引用的原始素材文件名]
 ---
 ```
@@ -259,7 +272,7 @@ grep "^## \[" wiki/log.md | head -5
 | ------- | -------------------------------------------------------------- |
 | 附件路径    | Settings → Files and links → Attachment folder → `raw/assets/` |
 | 下载附件快捷键 | Settings → Hotkeys → "Download attachments" → `Ctrl+Shift+D`   |
-| 推荐插件    | Dataview（元数据查询）、Marp Slides（幻灯片）、Web Clipper（网页裁剪）、**Front Matter Title**（图谱/文件列表显示中文标题） |
+| 推荐插件    | Dataview（元数据查询）、Marp Slides（幻灯片）、Web Clipper（网页裁剪）、**Front Matter Title**（图谱/文件列表显示页面标题） |
 
 **Web Clipper** 是快速收录网页文章的利器：浏览器中一键将文章转为 Markdown，保存到 `raw/` 目录，然后 `/wiki ingest` 即可。
 
@@ -267,7 +280,7 @@ grep "^## \[" wiki/log.md | head -5
 
 知识库目录可预置 Front Matter Title 插件配置（`.obsidian/plugins/obsidian-front-matter-title-plugin/data.json`），安装后即可生效。
 
-**作用**：Obsidian 默认用文件名（英文）显示节点和文件列表。此插件读取每个页面 frontmatter 中的 `title` 字段，替换为中文标题显示。
+**作用**：Obsidian 默认用文件名显示节点和文件列表。此插件读取每个页面 frontmatter 中的 `title` 字段，替换为对应知识库语言的页面标题。
 
 **安装**：Settings → Community plugins → Browse → 搜索 "Front Matter Title" → Install → Enable
 
@@ -275,13 +288,13 @@ grep "^## \[" wiki/log.md | head -5
 
 | 区域 | 效果 |
 |------|------|
-| Graph | 图谱节点显示中文标题 |
-| Explorer | 左侧文件列表显示中文标题 |
-| Tab | 标签页标题显示中文 |
-| Search | 搜索结果显示中文标题 |
-| Suggest | `[[` 链接建议弹窗显示中文标题 |
+| Graph | 图谱节点显示页面标题 |
+| Explorer | 左侧文件列表显示页面标题 |
+| Tab | 标签页标题显示页面标题 |
+| Search | 搜索结果显示页面标题 |
+| Suggest | `[[` 链接建议弹窗显示页面标题 |
 
-**原理**：插件的全局模板 `common.main` 设为 `"title"`，即读取 frontmatter 的 `title` 字段。每个 wiki 页面的 frontmatter 都包含 `title`，因此所有页面都会显示中文标题。如需自定义某个 feature 的模板，可在插件设置中为对应 feature 单独设置 `templates.main`（留空则使用全局模板）。
+**原理**：插件的全局模板 `common.main` 设为 `"title"`，即读取 frontmatter 的 `title` 字段。每个 wiki 页面的 frontmatter 都包含 `title`，因此页面会显示对应知识库语言的标题。如需自定义某个 feature 的模板，可在插件设置中为对应 feature 单独设置 `templates.main`（留空则使用全局模板）。
 
 ### 图谱视图配置
 

@@ -221,6 +221,10 @@ Thumbs.db
 *~
 wiki-*.zip
 
+# Wiki skill runtime settings
+/skills/wiki/settings.json
+/skills/wiki/.settings.json.*.tmp
+
 /raw/
 /wiki/
 /.claude/

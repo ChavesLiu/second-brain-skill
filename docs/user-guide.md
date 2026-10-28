@@ -12,6 +12,7 @@
 - [环境准备](#环境准备)
 - [安装 Skill](#安装-skill)
 - [初始化知识库](#初始化知识库)
+- [语言设置](#语言设置)
 - [核心功能](#核心功能)
   - [收录素材 — /wiki ingest](#收录素材--wiki-ingest)
   - [查询知识 — /wiki query](#查询知识--wiki-query)
@@ -80,6 +81,7 @@ git clone https://github.com/ChavesLiu/second-brain-skill.git
 
 # 2. 将 skill 目录复制到 Claude Code 全局 skills 目录
 cp -r second-brain-skill/skills/wiki ~/.claude/skills/wiki
+# 更新已有安装时，不要覆盖本地 settings.json 和 registries.json
 
 # 3. 安装 Python 依赖
 pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
@@ -114,6 +116,7 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 ├── README.md                   #   Skill 说明
 ├── IDEA.md                     #   原始设计理念
 ├── registries.json             #   知识库注册表
+├── settings.json               #   本地交互语言设置（首次使用后生成）
 ├── workflows/                  #   各子命令的工作流定义
 │   ├── init.md
 │   ├── ingest.md
@@ -137,11 +140,14 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 /wiki init
 ```
 
-Claude Code 会依次询问三个问题：
+首次使用任意 `/wiki` 功能时，Claude Code 会先询问一次默认交互语言（`zh` / `en` / `ja` / `es` / `fr` / `ko`），并写入 `<skill-dir>/settings.json` 的 `interaction_language`。以后跨会话读取该设置，不再重复询问。
+
+`/wiki init` 只会询问两个问题：
 
 1. **知识库路径** — 将在此路径下创建 `raw/` 和 `wiki/` 子目录
 2. **知识库名称** — 用于多知识库切换时的显示名称
-3. **Wiki 语言** — `zh`（中文）或 `en`（English）
+
+新知识库的内容语言默认使用当前交互语言。已有知识库保留 `registries.json` 中的 `language`，不会自动翻译；缺少 `language` 的旧库按 `zh` 处理。
 
 
 初始化完成后，你会得到如下目录结构：
@@ -161,7 +167,31 @@ Claude Code 会依次询问三个问题：
     └── analyses/               #     分析页（对比、综合论述）
 ```
 
+
 ---
+
+## 语言设置
+
+Second Brain Skill 将两类语言分开处理：
+
+| 语言 | 用途 | 来源 |
+|------|------|------|
+| `ui_lang` / 交互语言 | `/wiki help`、提问、确认、回答等 UI 交互 | `<skill-dir>/settings.json` 的 `interaction_language` |
+| `KB_LANG` / 知识库语言 | Wiki 页面、`wiki/log.md`、新库 tags 和页面标题 | `registries.json` 中该知识库的 `language` |
+
+使用命令：
+
+```text
+/wiki language          # 查看当前交互语言
+/wiki language fr       # 切换 UI 交互语言，并作为以后新知识库的默认内容语言
+```
+
+注意：
+
+- `/wiki language fr` 不会修改已有知识库的 `language`，也不会翻译已有页面。
+- 新知识库的 tags 跟随 `KB_LANG`；旧库已有标签保持原来的同库习惯，不做迁移。
+- `settings.json` 是本地环境配置。Claude Code 全局安装、OpenClaw 环境、不同机器会各自保存；项目不会承诺自动多机同步。
+- 更新或复制 Skill 时，不要覆盖个人 `settings.json`；同理，`registries.json` 通常也包含本地知识库路径，应谨慎保留。
 
 ## 核心功能
 
@@ -440,7 +470,7 @@ Obsidian 是浏览和可视化 wiki 的最佳伴侣。LLM 在 Claude Code 中维
 
 | 插件 | 用途 | 必要性 |
 |------|------|--------|
-| **Front Matter Title** | 图谱和文件列表中显示中文标题（而非英文文件名） | 强烈推荐 |
+| **Front Matter Title** | 图谱和文件列表中显示页面标题（跟随知识库语言，而非文件名） | 强烈推荐 |
 | **Dataview** | 基于 frontmatter 的元数据查询 | 推荐 |
 | **Web Clipper** | 浏览器中一键将网页裁剪为 Markdown | 推荐 |
 | **Marp Slides** | 浏览 LLM 生成的幻灯片 | 可选 |
@@ -451,15 +481,15 @@ Obsidian 是浏览和可视化 wiki 的最佳伴侣。LLM 在 Claude Code 中维
 
 **安装**：Settings → Community plugins → Browse → 搜索 "Front Matter Title" → Install → Enable
 
-**效果**：Obsidian 默认用英文文件名显示节点。插件会读取每个页面 frontmatter 中的 `title` 字段，替换为中文标题。
+**效果**：Obsidian 默认用文件名显示节点。插件会读取每个页面 frontmatter 中的 `title` 字段，替换为对应知识库语言的页面标题。
 
 | 替换区域 | 效果 |
 |---------|------|
-| Graph | 图谱节点显示中文标题 |
-| Explorer | 左侧文件列表显示中文标题 |
-| Tab | 标签页标题显示中文 |
-| Search | 搜索结果显示中文标题 |
-| Suggest | `[[` 链接建议弹窗显示中文标题 |
+| Graph | 图谱节点显示页面标题 |
+| Explorer | 左侧文件列表显示页面标题 |
+| Tab | 标签页标题显示页面标题 |
+| Search | 搜索结果显示页面标题 |
+| Suggest | `[[` 链接建议弹窗显示页面标题 |
 
 ### 图谱视图配置
 
@@ -494,13 +524,15 @@ Obsidian 是浏览和可视化 wiki 的最佳伴侣。LLM 在 Claude Code 中维
 
 - 已在本地安装好 Skill 并初始化知识库
 - 知识库目录通过 Git 同步或云盘同步到 OpenClaw 可访问的环境
+- OpenClaw 环境有自己的 Skill 目录和 `settings.json`；交互语言等本地设置需在该环境单独保存
 
 ### 配置步骤
 
 1. **确保 Skill 文件就位**：OpenClaw 环境中的 `~/.openclaw/workspace/skills/` 目录需要包含完整的 Skill 文件
 2. **同步知识库**：将知识库目录（含 `raw/` 和 `wiki/`）同步到 OpenClaw 可访问的路径
 3. **更新注册表**：如果路径有变化，修改 `~/.openclaw/workspace/skills/wiki/registries.json` 中的知识库路径
-4. **验证**：在 OpenClaw 中执行 `/wiki help` 确认 Skill 正常加载
+4. **保留本地设置**：更新或复制 Skill 时不要覆盖 OpenClaw 环境中的 `settings.json`；它不会自动与 Claude Code 本地安装或其他机器同步
+5. **验证**：在 OpenClaw 中执行 `/wiki help` 确认 Skill 正常加载
 
 ### 使用方式
 
@@ -535,7 +567,7 @@ Memex 和现代知识管理有什么关系？
 在 OpenClaw 的记忆中添加以下内容：
 
 ```
-- 学习知识库：~/Documents/knowledge-wiki，ID: learning-kb，语言: zh
+- 学习知识库：~/Documents/knowledge-wiki，ID: learning-kb，知识库语言: zh，OpenClaw 交互语言按本环境 settings.json
 - 用户发来的前沿知识文章/论文/资料 → 直接存入 ~/Documents/knowledge-wiki/raw/
 - 用户发来微信公众号链接 → 自动 playwright pdf 下载 + 自动 ingest，不用等用户指令
 - /wiki ingest 时统一收录进知识库（也可手动触发）
@@ -700,11 +732,11 @@ git commit -m "ingest: 收录 XX"
 ```yaml
 ---
 title: 页面标题
-aliases: [中文别名]              # Front Matter Title 插件显示用
+aliases: [页面别名]              # Front Matter Title 插件显示用，跟随知识库语言
 type: source | entity | concept | analysis
 created: 2026-04-13
 updated: 2026-04-13
-tags: [标签1, 标签2]
+tags: [标签1, 标签2]             # 新库标签跟随 KB 语言；旧标签保持原习惯
 sources: [引用的原始素材文件名]
 ---
 ```

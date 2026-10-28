@@ -67,6 +67,7 @@ Skill을 Claude Code의 전역 Skill 디렉터리로 복사합니다.
 
 ```bash
 cp -r second-brain-skill/skills/wiki ~/.claude/skills/wiki
+# 기존 설치를 업데이트할 때는 로컬 settings.json 및 registries.json을 덮어쓰지 마세요
 ```
 
 필요한 의존성을 설치합니다.
@@ -87,7 +88,9 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 /wiki init
 ```
 
-안내에 따라 경로, 이름, Wiki 페이지의 콘텐츠 언어(`zh` / `en`)를 선택합니다. 여기서 선택하는 언어는 생성되는 Wiki 콘텐츠의 언어이며, 이 README의 번역 언어 지원을 뜻하지 않습니다.
+처음으로 어떤 `/wiki` 기능이든 사용할 때 Skill은 기본 상호작용 언어(`zh` / `en` / `ja` / `es` / `fr` / `ko`)를 한 번만 묻고 `<skill-dir>/settings.json`의 `interaction_language`에 저장합니다. 이후 세션에서는 이 설정을 읽고 다시 묻지 않습니다.
+
+`/wiki init`은 지식 베이스 경로와 이름만 묻습니다. 새 지식 베이스의 콘텐츠 언어는 현재 상호작용 언어를 기본값으로 사용합니다. 기존 지식 베이스는 `registries.json`의 `language`를 유지하며 자동 번역되지 않습니다. `language`가 없는 이전 등록 항목은 `zh`로 처리됩니다.
 
 ### 3. 첫 자료 수집
 
@@ -113,7 +116,7 @@ LLM이 자료를 읽고 요약 페이지를 만들며 엔터티와 개념을 추
 RAG 방식과 Wiki 방식의 장단점을 비교해 줘
 ```
 
-자연어로 질문할 수도 있습니다. LLM은 축적된 지식을 연결하여 답변합니다.
+자연어로 질문할 수도 있습니다. LLM은 축적된 지식을 연결하여 답변합니다. UI 상호작용과 답변은 현재 상호작용 언어를 사용하고, Wiki 페이지와 로그는 해당 지식 베이스 자체의 `language`를 사용합니다.
 
 ## 핵심 명령어
 
@@ -121,6 +124,8 @@ RAG 방식과 Wiki 방식의 장단점을 비교해 줘
 | --- | --- |
 | `/wiki help` | 사용 가능한 명령어와 사용법 표시 |
 | `/wiki init` | 지식 베이스 생성 및 등록 |
+| `/wiki language` | 현재 상호작용 언어 표시 |
+| `/wiki language <zh|en|ja|es|fr|ko>` | UI 상호작용 언어와 앞으로 만들 새 지식 베이스의 기본 언어 변경 |
 | `/wiki ingest` | 새 자료 수집(Markdown, PDF, 이미지) |
 | `/wiki query <question>` | 지식 베이스 기반 질의응답 |
 | `/wiki lint` | 지식 베이스 상태 및 일관성 검사 |
@@ -151,13 +156,13 @@ Markdown 지식 베이스를 [Obsidian](https://obsidian.md/)에서 열어 그�
 
 권장 플러그인:
 
-- **Front Matter Title** — frontmatter의 제목을 그래프 노드에 표시(사전 설정)
+- **Front Matter Title** — frontmatter의 제목을 그래프 노드에 표시(사전 설정, 제목 언어는 지식 베이스 콘텐츠 언어를 따름)
 - **Dataview** — frontmatter 기반 메타데이터 검색
 - **Web Clipper** — 웹 문서를 `raw/`에 저장
 
 ## OpenClaw(Web)
 
-OpenClaw에서도 사용할 수 있지만, 바로 동작하는 것은 아닙니다. Skill 파일과 지식 베이스를 OpenClaw가 접근할 수 있는 위치에 두고, `registries.json`의 경로를 맞추며, OpenClaw Memory에 자동 수집 규칙을 설정해야 합니다. WeChat 기사 링크 등을 자동으로 수집하려면 링크를 열어 PDF로 저장할 수 있는 브라우저 조작 도구(예: Playwright)나 다운로드 수단도 OpenClaw 환경에서 사용할 수 있어야 합니다.
+OpenClaw에서도 사용할 수 있지만, 바로 동작하는 것은 아닙니다. Skill 파일과 지식 베이스를 OpenClaw가 접근할 수 있는 위치에 두고, `registries.json`의 경로를 맞추며, OpenClaw Memory에 자동 수집 규칙을 설정해야 합니다. `settings.json`은 로컬 환경별 설정입니다. Claude Code 전역 설치와 OpenClaw 환경은 상호작용 언어 등 설정을 각각 저장하며, 여러 머신 간 자동 동기화는 제공하지 않습니다. WeChat 기사 링크 등을 자동으로 수집하려면 링크를 열어 PDF로 저장할 수 있는 브라우저 조작 도구(예: Playwright)나 다운로드 수단도 OpenClaw 환경에서 사용할 수 있어야 합니다.
 
 ![OpenClaw에 링크를 보내 지식 베이스로 수집하는 예](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 

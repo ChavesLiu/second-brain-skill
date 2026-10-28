@@ -14,6 +14,7 @@
 - [Prerequisites](#prerequisites)
 - [Installing the Skill](#installing-the-skill)
 - [Initializing a Knowledge Base](#initializing-a-knowledge-base)
+- [Language Settings](#language-settings)
 - [Core Features](#core-features)
   - [Ingesting Materials — /wiki ingest](#ingesting-materials--wiki-ingest)
   - [Querying Knowledge — /wiki query](#querying-knowledge--wiki-query)
@@ -83,6 +84,7 @@ git clone https://github.com/ChavesLiu/second-brain-skill.git
 
 # 2. Copy the skill directory to Claude Code's global skills directory
 cp -r second-brain-skill/skills/wiki ~/.claude/skills/wiki
+# When updating an existing install, do not overwrite local settings.json or registries.json
 
 # 3. Install Python dependencies
 pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
@@ -117,6 +119,7 @@ The following demo covers the full `/wiki help` → `/wiki init` → `/wiki inge
 ├── README.md                   #   Skill documentation
 ├── IDEA.md                     #   Original design philosophy
 ├── registries.json             #   Knowledge base registry
+├── settings.json               #   Local interaction language settings (created after first use)
 ├── workflows/                  #   Sub-command workflow definitions
 │   ├── init.md
 │   ├── ingest.md
@@ -140,11 +143,14 @@ Run the following command to create your first knowledge base:
 /wiki init
 ```
 
-Claude Code will ask three questions in sequence:
+The first time you use any `/wiki` feature, Claude Code first asks once for your default interaction language (`zh` / `en` / `ja` / `es` / `fr` / `ko`) and writes it to `interaction_language` in `<skill-dir>/settings.json`. Later sessions read that setting and do not ask again.
+
+`/wiki init` only asks two questions:
 
 1. **Knowledge base path** — `raw/` and `wiki/` subdirectories will be created here
 2. **Knowledge base name** — Display name used when switching between multiple KBs
-3. **Wiki language** — `zh` (Chinese) or `en` (English)
+
+New knowledge bases default their content language to the current interaction language. Existing knowledge bases keep the `language` in `registries.json` and are not auto-translated; older entries without `language` are treated as `zh`.
 
 After initialization, you'll have the following directory structure:
 
@@ -163,7 +169,31 @@ After initialization, you'll have the following directory structure:
     └── analyses/               #     Analysis pages (comparisons, syntheses)
 ```
 
+
 ---
+
+## Language Settings
+
+Second Brain Skill keeps two language concepts separate:
+
+| Language | Used for | Source |
+|----------|----------|--------|
+| `ui_lang` / interaction language | `/wiki help`, prompts, confirmations, answers, and other UI interactions | `interaction_language` in `<skill-dir>/settings.json` |
+| `KB_LANG` / knowledge base language | Wiki pages, `wiki/log.md`, new KB tags, and page titles | The knowledge base `language` in `registries.json` |
+
+Commands:
+
+```text
+/wiki language          # Show the current interaction language
+/wiki language fr       # Switch UI interaction language and default future KB content language to French
+```
+
+Notes:
+
+- `/wiki language fr` does not change existing knowledge base `language` values and does not translate existing pages.
+- Tags in new knowledge bases follow `KB_LANG`; existing tags keep the convention already used in that KB and are not migrated.
+- `settings.json` is local environment configuration. Global Claude Code installs, OpenClaw environments, and different machines each keep their own copy; the project does not promise automatic multi-machine sync.
+- When updating or copying the Skill, do not overwrite a personal `settings.json`; likewise, `registries.json` usually contains local KB paths and should be preserved carefully.
 
 ## Core Features
 
@@ -442,7 +472,7 @@ Obsidian is the ideal companion for browsing and visualizing the wiki. The LLM m
 
 | Plugin | Purpose | Necessity |
 |--------|---------|-----------|
-| **Front Matter Title** | Display Chinese titles in graph and file list (instead of English filenames) | Highly recommended |
+| **Front Matter Title** | Display page titles in the knowledge base language (instead of filenames) | Highly recommended |
 | **Dataview** | Metadata queries based on frontmatter | Recommended |
 | **Web Clipper** | One-click web article clipping in the browser | Recommended |
 | **Marp Slides** | Browse LLM-generated slides | Optional |
@@ -453,7 +483,7 @@ The project includes pre-configured settings for the Front Matter Title plugin. 
 
 **Install**: Settings → Community plugins → Browse → Search "Front Matter Title" → Install → Enable
 
-**Effect**: By default, Obsidian shows English filenames as node labels. The plugin reads the `title` field from each page's frontmatter and replaces it with the localized title.
+**Effect**: By default, Obsidian shows filenames as node labels. The plugin reads the `title` field from each page's frontmatter and replaces it with the page title in that knowledge base's language.
 
 | Replacement Area | Effect |
 |-----------------|--------|
@@ -496,13 +526,15 @@ Other recommended settings (click the gear icon in the top-left of the graph):
 
 - Skill installed locally and knowledge base initialized
 - Knowledge base directory synced to OpenClaw's accessible environment via Git or cloud sync
+- The OpenClaw environment has its own Skill directory and `settings.json`; local settings such as interaction language must be saved separately there
 
 ### Setup Steps
 
 1. **Ensure Skill files are in place**: The `~/.openclaw/workspace/skills/` directory in the OpenClaw environment needs the complete Skill files
 2. **Sync knowledge base**: Sync the knowledge base directory (with `raw/` and `wiki/`) to an OpenClaw-accessible path
 3. **Update registry**: If paths have changed, update the knowledge base path in `~/.openclaw/workspace/skills/wiki/registries.json`
-4. **Verify**: Run `/wiki help` in OpenClaw to confirm the Skill loads correctly
+4. **Preserve local settings**: When updating or copying the Skill, do not overwrite `settings.json` in the OpenClaw environment; it is not automatically synced with the local Claude Code install or other machines
+5. **Verify**: Run `/wiki help` in OpenClaw to confirm the Skill loads correctly
 
 ### Usage
 
@@ -537,7 +569,7 @@ By writing knowledge base configuration into OpenClaw's Memory, you can have the
 Add the following to OpenClaw's memory:
 
 ```
-- Learning KB: ~/Documents/knowledge-wiki, ID: learning-kb, Language: zh
+- Learning KB: ~/Documents/knowledge-wiki, ID: learning-kb, KB language: zh; OpenClaw interaction language follows this environment's settings.json
 - When user sends articles/papers/resources → save directly to ~/Documents/knowledge-wiki/raw/
 - When user sends a WeChat article link → auto Playwright PDF download + auto ingest, no need to wait for commands
 - /wiki ingest to batch-ingest into KB (can also be triggered manually)
@@ -702,11 +734,11 @@ Two ways:
 ```yaml
 ---
 title: Page Title
-aliases: [Alternative names]              # Used by Front Matter Title plugin
+aliases: [Alternative names]              # Used by Front Matter Title plugin; follows KB language
 type: source | entity | concept | analysis
 created: 2026-04-13
 updated: 2026-04-13
-tags: [tag1, tag2]
+tags: [tag1, tag2]                       # New KB tags follow KB language; old tags keep their existing convention
 sources: [referenced raw material filenames]
 ---
 ```

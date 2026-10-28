@@ -21,13 +21,17 @@ An LLM-built and maintained personal knowledge base. The LLM handles all the hea
 /wiki init
 ```
 
-Follow the prompts to enter a path, name, and language. Multiple knowledge bases are supported — when multiple exist, the system will ask which one to use.
+The first time you use any `/wiki` feature, choose a default interaction language once (`zh` / `en` / `ja` / `es` / `fr` / `ko`). The value is written to `settings.json` in this Skill directory and read across later sessions without asking again.
+
+`/wiki init` only asks for the knowledge base path and name. New knowledge bases default their content language to the current interaction language. Existing knowledge bases keep the `language` in `registries.json` and are not auto-translated; older entries without `language` are treated as `zh`. Multiple knowledge bases are supported — when multiple exist, the system will ask which one to use.
 
 ### 3. Available Commands
 
 | Command | Function |
 |---------|----------|
 | `/wiki init` | Create and register a new knowledge base |
+| `/wiki language` | Show the current interaction language |
+| `/wiki language <zh|en|ja|es|fr|ko>` | Change the UI interaction language and the default content language for future new knowledge bases |
 | `/wiki ingest` | Ingest new materials into the knowledge base |
 | `/wiki query <question>` | Answer questions based on the knowledge base |
 | `/wiki lint` | Run a health check on the knowledge base |
@@ -61,6 +65,7 @@ The Skill is installed globally; knowledge base directories are created by the u
 ├── README.md                 #   This file
 ├── IDEA.md                   #   Original design philosophy
 ├── registries.json           #   Knowledge base registry
+├── settings.json             #   Local interaction language settings (created after first use; can stay untracked)
 ├── workflows/                #   Detailed workflows for each sub-command
 └── scripts/                  #   Helper scripts (lint.py, etc.)
 
@@ -84,7 +89,7 @@ The Skill is installed globally; knowledge base directories are created by the u
 |-------|----------|-----------|-----------|-------------|
 | Raw materials | `<kb>/raw/` | You | LLM | Immutable source of truth; LLM reads only |
 | Knowledge base | `<kb>/wiki/` | LLM | You | Fully owned by LLM; you browse via Obsidian |
-| Spec | `~/.claude/skills/wiki/` | You + LLM | LLM | Skill code, Schema, registry |
+| Spec | `~/.claude/skills/wiki/` | You + LLM | LLM | Skill code, Schema, registry, local settings |
 
 ---
 
@@ -185,6 +190,14 @@ Verifies the integrity of the entire system: directory structure, ingest workflo
 
 ---
 
+
+### Language Settings
+
+- `/wiki language`: show the current interaction language.
+- `/wiki language fr`: switch UI interactions and answers to French, and use French as the default content language for future new knowledge bases.
+- This command does not change existing `registries.json.language` values and does not translate existing pages.
+- `settings.json` is local environment configuration. Global Claude Code installs, OpenClaw environments, and different machines each keep their own copy. When updating or copying the Skill, do not overwrite a personal `settings.json`.
+
 ## Page Specification
 
 ### Frontmatter
@@ -194,11 +207,11 @@ Every wiki page has a YAML metadata header, compatible with Obsidian's Dataview 
 ```yaml
 ---
 title: Page Title
-aliases: [Alternative names]              # Used by Front Matter Title plugin
+aliases: [Alternative names]              # Used by Front Matter Title plugin; follows KB language
 type: source | entity | concept | analysis
 created: 2026-04-13
 updated: 2026-04-13
-tags: [tag1, tag2]
+tags: [tag1, tag2]                       # New KB tags follow KB language; old tags keep their existing convention
 sources: [referenced raw material filenames]
 ---
 ```
@@ -282,7 +295,7 @@ The knowledge base directory can include pre-configured Front Matter Title plugi
 | Search | Search results display localized titles |
 | Suggest | `[[` link suggestion popup displays localized titles |
 
-**How it works**: The plugin's global template `common.main` is set to `"title"`, reading the frontmatter `title` field. Since every wiki page includes `title` in its frontmatter, all pages display localized titles. To customize a specific feature's template, set a separate `templates.main` in the plugin settings for that feature (leave empty to use the global template).
+**How it works**: The plugin's global template `common.main` is set to `"title"`, reading the frontmatter `title` field. Since every wiki page includes `title` in its frontmatter, pages display titles in that knowledge base's language. To customize a specific feature's template, set a separate `templates.main` in the plugin settings for that feature (leave empty to use the global template).
 
 ### Graph View Configuration
 

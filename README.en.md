@@ -79,6 +79,7 @@ git clone https://github.com/ChavesLiu/second-brain-skill.git
 
 # Copy the Skill to Claude Code's global directory
 cp -r second-brain-skill/skills/wiki ~/.claude/skills/wiki
+# When updating an existing install, do not overwrite local settings.json or registries.json (personal local configuration)
 
 # Install dependencies
 pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
@@ -90,7 +91,9 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 /wiki init
 ```
 
-Follow the prompts to choose a path, name, and content language for your knowledge base. The initialization workflow currently defines `zh` (Chinese) and `en` (English) for generated wiki content; translated READMEs do not add support for other content languages.
+The first time you use any `/wiki` feature, the Skill asks once for your default interaction language (`zh` / `en` / `ja` / `es` / `fr` / `ko`) and writes it to `interaction_language` in `<skill-dir>/settings.json`. Later sessions read that setting and do not ask again.
+
+`/wiki init` only asks for the knowledge base path and name. New knowledge bases default their content language to the current interaction language. Existing knowledge bases keep the `language` in `registries.json` and are not auto-translated; older entries without `language` are treated as `zh`.
 
 ### 3. Ingest Your First Material
 
@@ -121,7 +124,7 @@ Or simply ask in natural language:
 Compare the pros and cons of RAG vs Wiki approaches
 ```
 
-The LLM uses your accumulated knowledge base to answer questions and connect relevant information.
+The LLM uses your accumulated knowledge base to answer questions and connect relevant information. UI interactions and answers use the current interaction language; wiki pages and logs use that knowledge base's own `language`.
 
 ## Core Commands
 
@@ -129,6 +132,8 @@ The LLM uses your accumulated knowledge base to answer questions and connect rel
 |---------|----------|
 | `/wiki help` | Show available commands and usage instructions |
 | `/wiki init` | Create and register a new knowledge base |
+| `/wiki language` | Show the current interaction language |
+| `/wiki language <zh|en|ja|es|fr|ko>` | Change the UI interaction language and the default content language for future new knowledge bases |
 | `/wiki ingest` | Ingest new materials (Markdown, PDF, images) |
 | `/wiki query <question>` | Answer questions based on the knowledge base |
 | `/wiki lint` | Check knowledge base health and consistency |
@@ -169,7 +174,7 @@ You can explore:
 
 Recommended plugins:
 
-- **Front Matter Title** — Display Chinese titles on graph nodes (pre-configured).
+- **Front Matter Title** — Display page titles on graph nodes (pre-configured; title language follows the knowledge base content language).
 - **Dataview** — Query metadata using frontmatter.
 - **Web Clipper** — Clip web articles directly into `raw/`.
 
@@ -177,7 +182,7 @@ Recommended plugins:
 
 Second Brain Skill can also be integrated with OpenClaw for conversational knowledge management.
 
-Give OpenClaw access to the Skill and knowledge base, then configure the knowledge base path and auto-ingest rules in its Memory to ingest materials conversationally without typing a command each time.
+Give OpenClaw access to the Skill and knowledge base, then configure the knowledge base path and auto-ingest rules in its Memory to ingest materials conversationally without typing a command each time. `settings.json` is local environment configuration: Claude Code global installs and OpenClaw environments each save their own interaction language and related settings, with no automatic multi-machine sync.
 
 For example, when you send a WeChat article link, the LLM can attempt to download it, save it to `raw/`, and ingest it if the OpenClaw environment provides the required browser or download tools (such as Playwright). This requires additional setup; configuring the knowledge base path alone is not sufficient.
 

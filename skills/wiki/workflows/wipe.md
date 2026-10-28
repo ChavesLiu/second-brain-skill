@@ -2,38 +2,47 @@
 
 清空或删除知识库内容，所有删除操作均经用户确认，文件移入回收站可恢复。
 
-> 📌 **路径约定**: 本文档中的 `raw/`、`wiki/` 均指当前知识库的绝对路径，由 SKILL.md 路由时确定（`KB_RAW`、`KB_WIKI`）。
+> 路径约定：本文档中的 `raw/`、`wiki/` 均指当前知识库的绝对路径，由 SKILL.md 路由时确定（`KB_RAW`、`KB_WIKI`）。
+
+## 语言分工
+
+- `UI_LANG`：所有删除确认、选项说明、风险提示、执行报告使用该语言。
+- `KB_LANG`：写入 `index.md`、`overview.md`、`log.md` 的内容使用该语言。
+- wipe 不翻译旧页面；恢复页面时保持原文件内容，只按需更新索引、概览、日志和关联链接。
+- 下方中文模板只表示结构。实际 AskUserQuestion 和用户报告按 `UI_LANG` 自然生成，实际写入 wiki 的文本按 `KB_LANG` 自然生成。
 
 ## 核心原则
 
-1. **人工确认** — 所有删除操作必须列出文件清单，经用户确认后才执行
-2. **回收站机制** — 删除 = 移入 `wiki/.trash/`，不是真删除，支持恢复
-3. **不动原始素材** — `raw/` 目录永远不动
-4. **清理关联** — 删除页面时同步清理 index.md、overview.md 及其他页面的 Related 链接
+1. **人工确认** — 所有删除操作必须列出文件清单，经用户确认后才执行。
+2. **回收站机制** — 删除 = 移入 `wiki/.trash/`，不是真删除，支持恢复。
+3. **不动原始素材** — `raw/` 目录永远不动。
+4. **清理关联** — 删除页面时同步清理 index.md、overview.md 及其他页面的 Related 链接。
 
 ## 回收站
 
 路径：`wiki/.trash/`
 
-- 删除时按原目录结构存放，如 `wiki/concepts/swiglu.md` → `wiki/.trash/concepts/swiglu.md`
-- 同名文件冲突时，旧文件加时间戳后缀：`swiglu.2026-04-13.md`
-- 恢复时移回原路径，并重新更新 index.md、overview.md、关联页面的 Related
-- 用户可随时 `/wiki wipe trash` 查看回收站内容，`/wiki wipe restore` 恢复文件，`/wiki wipe empty-trash` 永久清空回收站
+- 删除时按原目录结构存放，如 `wiki/concepts/swiglu.md` → `wiki/.trash/concepts/swiglu.md`。
+- 同名文件冲突时，旧文件加时间戳后缀：`swiglu.2026-04-13.md`。
+- 恢复时移回原路径，并重新更新 index.md、overview.md、关联页面的 Related。
+- 用户可随时 `/wiki wipe trash` 查看回收站内容，`/wiki wipe restore` 恢复文件，`/wiki wipe empty-trash` 永久清空回收站。
 
 ## 使用方式
 
-- `/wiki wipe` — 交互式选择操作
-- `/wiki wipe all` — 全量重置
-- `/wiki wipe <关键词>` — 删除匹配的页面
-- `/wiki wipe trash` — 查看回收站
-- `/wiki wipe restore` — 从回收站恢复页面
-- `/wiki wipe empty-trash` — 永久清空回收站
+- `/wiki wipe` — 交互式选择操作。
+- `/wiki wipe all` — 全量重置。
+- `/wiki wipe <关键词>` — 删除匹配的页面。
+- `/wiki wipe trash` — 查看回收站。
+- `/wiki wipe restore` — 从回收站恢复页面。
+- `/wiki wipe empty-trash` — 永久清空回收站。
 
 ## 工作流程
 
 ### 1. 确定操作模式
 
 #### 无参数 — 交互式选择
+
+使用 `UI_LANG` 询问：
 
 ```json
 {
@@ -56,6 +65,7 @@
 #### 2a. 盘点当前内容
 
 读取 `wiki/index.md`，统计将要移入回收站的文件：
+
 - `wiki/sources/*.md`
 - `wiki/entities/*.md`
 - `wiki/concepts/*.md`
@@ -63,10 +73,12 @@
 
 #### 2b. 确认（必须）
 
+用 `UI_LANG` 展示数量、清单和风险提示：
+
 ```json
 {
   "questions": [{
-    "question": "确认全量重置？以下 N 个文件将移入回收站（wiki/.trash/）：\n\n素材摘要: X 个\n实体页面: X 个\n概念页面: X 个\n分析页面: X 个\n\n⚠️ 可通过 /wiki wipe restore 恢复\n⚠️ raw/ 目录不受影响",
+    "question": "确认全量重置？以下 N 个文件将移入回收站（wiki/.trash/）：\n\n素材摘要: X 个\n实体页面: X 个\n概念页面: X 个\n分析页面: X 个\n\n可通过 /wiki wipe restore 恢复\nraw/ 目录不受影响",
     "header": "确认重置",
     "multiSelect": false,
     "options": [
@@ -81,18 +93,21 @@
 
 用户确认后：
 
-1. **创建回收站目录**（如不存在）：`mkdir -p wiki/.trash/{sources,entities,concepts,analyses}`
+1. **创建回收站目录**（如不存在）：`mkdir -p wiki/.trash/{sources,entities,concepts,analyses}`。
 
 2. **移动所有内容页面到回收站**：
+
    ```bash
    mv wiki/sources/*.md wiki/.trash/sources/
    mv wiki/entities/*.md wiki/.trash/entities/
    mv wiki/concepts/*.md wiki/.trash/concepts/
    mv wiki/analyses/*.md wiki/.trash/analyses/
    ```
+
    同名冲突时给旧文件加时间戳后缀再移动。
 
-3. **重置 index.md** 为空索引模板：
+3. **重置 index.md** 为空索引模板，可读文本按 `KB_LANG`：
+
    ```markdown
    # Wiki Index
 
@@ -102,6 +117,7 @@
    ## Overview
 
    - [Overview](overview.md) — Wiki 总览与当前知识图谱摘要
+   - [使用约定](conventions.md) — 用户对本知识库的操作偏好
 
    ## Sources
 
@@ -112,9 +128,10 @@
    ## Analyses
    ```
 
-4. **重置 overview.md**：保留 frontmatter，统计清零，清空图谱摘要和近期活动。
+4. **重置 overview.md**：保留 frontmatter，统计清零，清空图谱摘要和近期活动；可读文本按 `KB_LANG`。
 
-5. **在 log.md 顶部追加记录**：
+5. **在 log.md 顶部追加记录**，正文按 `KB_LANG`：
+
    ```markdown
    ## [YYYY-MM-DD] wipe | 全量重置
 
@@ -123,12 +140,13 @@
    - 可通过 /wiki wipe restore 恢复
    ```
 
-6. **输出结果**：
-   ```
-   ✅ 知识库已重置
-      移入回收站: N 个页面
-      raw/ 目录保留: M 个素材可随时重新 /wiki ingest
-      💡 /wiki wipe restore 可恢复
+6. **输出结果**，用 `UI_LANG`：
+
+   ```text
+   知识库已重置
+     移入回收站: N 个页面
+     raw/ 目录保留: M 个素材可随时重新 /wiki ingest
+     /wiki wipe restore 可恢复
    ```
 
 ### 3. 选择性删除流程
@@ -136,22 +154,26 @@
 #### 3a. 确定删除目标
 
 **按素材删除**：
-1. 读取 `wiki/index.md`，列出素材供用户选择（或根据关键词匹配）
-2. 找到素材摘要页 `wiki/sources/xxx.md`
+
+1. 读取 `wiki/index.md`，列出素材供用户选择（或根据关键词匹配）。
+2. 找到素材摘要页 `wiki/sources/xxx.md`。
 3. 分析影响范围：
-   - "将删除"：仅由该素材产生的页面（`sources` 字段仅含该素材）
-   - "将更新"：还有其他素材引用的页面（保留但移除关联）
+   - “将删除”：仅由该素材产生的页面（`sources` 字段仅含该素材）。
+   - “将更新”：还有其他素材引用的页面（保留但移除关联）。
 
 **按页面删除**：
-1. 用户指定或从列表选择要删除的页面
-2. 分析哪些其他页面的 Related 引用了目标页面
+
+1. 用户指定或从列表选择要删除的页面。
+2. 分析哪些其他页面的 Related 引用了目标页面。
 
 #### 3b. 确认（必须）
+
+用 `UI_LANG` 展示影响范围：
 
 ```json
 {
   "questions": [{
-    "question": "删除《目标》将产生以下影响：\n\n🗑️ 移入回收站:\n- wiki/sources/xxx.md\n- wiki/entities/yyy.md（仅此素材引用）\n\n✏️ 将更新（移除关联）:\n- wiki/concepts/zzz.md（还有其他素材引用，保留）\n\n确认执行？",
+    "question": "删除《目标》将产生以下影响：\n\n移入回收站:\n- wiki/sources/xxx.md\n- wiki/entities/yyy.md（仅此素材引用）\n\n将更新（移除关联）:\n- wiki/concepts/zzz.md（还有其他素材引用，保留）\n\n确认执行？",
     "header": "确认删除",
     "multiSelect": false,
     "options": [
@@ -167,51 +189,66 @@
 
 用户确认后：
 
-1. **移动目标页面到回收站**（按原目录结构）
+1. **移动目标页面到回收站**（按原目录结构）。
 2. **更新受影响页面**：
-   - 从 `sources` frontmatter 移除被删素材引用
-   - 从 Related 区块移除指向已删页面的链接
-   - 更新 `updated` 日期
-3. **更新 index.md** — 移除已删页面条目
-4. **更新 overview.md** — 更新统计和知识图谱摘要
-5. **在 log.md 顶部追加记录**
-6. **运行 `python <skill-dir>/scripts/lint.py --wiki-dir <KB_WIKI> --raw-dir <KB_RAW>`** 检查是否产生新的断链或孤岛
-7. **输出结果**：
+   - 从 `sources` frontmatter 移除被删素材引用。
+   - 从 Related 区块移除指向已删页面的链接。
+   - 更新 `updated` 日期。
+3. **更新 index.md** — 移除已删页面条目。
+4. **更新 overview.md** — 更新统计和知识图谱摘要。
+5. **在 log.md 顶部追加记录**，正文按 `KB_LANG`。
+6. **运行检查**：
+
+   ```bash
+   python <skill-dir>/scripts/lint.py --wiki-dir <KB_WIKI> --raw-dir <KB_RAW>
    ```
-   ✅ 删除完成
-      移入回收站: N 个页面
-      更新: M 个页面（移除关联）
-      lint: 通过
-      💡 /wiki wipe restore 可恢复
+
+   检查是否产生新的断链或孤岛。
+
+7. **输出结果**，用 `UI_LANG`：
+
+   ```text
+   删除完成
+     移入回收站: N 个页面
+     更新: M 个页面（移除关联）
+     lint: 通过
+     /wiki wipe restore 可恢复
    ```
 
 ### 4. 回收站操作
 
 #### `/wiki wipe trash` — 查看回收站
 
-扫描 `wiki/.trash/` 目录，按类别列出所有文件及其删除前的原路径。如果回收站为空，提示"回收站为空"。
+扫描 `wiki/.trash/` 目录，按类别列出所有文件及其删除前的原路径。如果回收站为空，用 `UI_LANG` 提示“回收站为空”的等价含义。
 
 #### `/wiki wipe restore` — 恢复页面
 
-1. 列出回收站中的所有文件，供用户选择（支持多选）
-2. **确认恢复**：展示将恢复的文件列表，确认后执行
+1. 列出回收站中的所有文件，供用户选择（支持多选），交互使用 `UI_LANG`。
+2. **确认恢复**：展示将恢复的文件列表，确认后执行。
 3. 执行恢复：
-   - 将文件从 `wiki/.trash/` 移回原路径
-   - 重新在 index.md 中添加条目
-   - 重新在相关页面的 Related 区块中添加链接
-   - 更新 overview.md 统计
-   - 在 log.md 追加恢复记录
-4. 运行 `python <skill-dir>/scripts/lint.py --wiki-dir <KB_WIKI> --raw-dir <KB_RAW>` 检查恢复后的一致性
+   - 将文件从 `wiki/.trash/` 移回原路径。
+   - 重新在 index.md 中添加条目。
+   - 重新在相关页面的 Related 区块中添加链接。
+   - 更新 overview.md 统计。
+   - 在 log.md 追加恢复记录。
+4. 运行：
+
+   ```bash
+   python <skill-dir>/scripts/lint.py --wiki-dir <KB_WIKI> --raw-dir <KB_RAW>
+   ```
+
+   检查恢复后的一致性。
 
 #### `/wiki wipe empty-trash` — 永久清空回收站
 
-1. 列出回收站所有文件
-2. **确认**：⚠️ 此操作不可逆（除非 git 恢复），要求用户确认
-3. 确认后 `rm -rf wiki/.trash/*`
+1. 列出回收站所有文件。
+2. **确认**：此操作不可逆（除非 git 恢复），要求用户用 `UI_LANG` 明确确认。
+3. 确认后 `rm -rf wiki/.trash/*`。
+4. 在 `log.md` 记录清空回收站，正文按 `KB_LANG`。
 
 ## 注意事项
 
-- **永远不删除 raw/** — 原始素材不属于 wiki 内容，只读不写
-- **log.md 只追加不清空** — 重置历史本身有价值
-- 回收站目录 `wiki/.trash/` 建议加入 `.gitignore`，避免回收站内容进入版本控制
-- 如果用户想清空 raw/，需自行手动操作，skill 提示但不代执行
+- **永远不删除 raw/** — 原始素材不属于 wiki 内容，只读不写。
+- **log.md 只追加不清空** — 重置历史本身有价值。
+- 回收站目录 `wiki/.trash/` 建议加入 `.gitignore`，避免回收站内容进入版本控制。
+- 如果用户想清空 raw/，需自行手动操作，skill 提示但不代执行。

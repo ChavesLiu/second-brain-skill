@@ -67,6 +67,7 @@ SkillをClaude CodeのグローバルSkillディレクトリへコピーしま�
 
 ```bash
 cp -r second-brain-skill/skills/wiki ~/.claude/skills/wiki
+# 既存インストールを更新する場合は、ローカルの settings.json と registries.json を上書きしないでください
 ```
 
 必要な依存関係をインストールします。
@@ -87,7 +88,9 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 /wiki init
 ```
 
-画面の案内に従い、保存先、名前、Wikiページの内容言語（`zh` / `en`）を選択します。ここで選ぶ言語は、生成されるWikiコンテンツの言語です。このREADMEの翻訳言語を切り替えるものではありません。
+任意の `/wiki` 機能を初めて使うとき、Skill は既定の対話言語（`zh` / `en` / `ja` / `es` / `fr` / `ko`）を一度だけ確認し、`<skill-dir>/settings.json` の `interaction_language` に保存します。以後のセッションではその設定を読み取り、再確認しません。
+
+`/wiki init` では知識ベースの保存先と名前だけを尋ねます。新しい知識ベースの内容言語は現在の対話言語になります。既存の知識ベースは `registries.json` の `language` を保持し、自動翻訳されません。古い登録で `language` がない場合は `zh` として扱われます。
 
 ### 3. 最初の資料を取り込む
 
@@ -113,7 +116,7 @@ LLMが資料を読み、要約ページを生成し、エンティティや概�
 RAG方式とWiki方式の長所・短所を比較して
 ```
 
-自然言語で質問することもできます。LLMは蓄積された知識ベースを使って関連情報を結び付け、回答します。
+自然言語で質問することもできます。LLMは蓄積された知識ベースを使って関連情報を結び付け、回答します。UI上のやり取りと回答は現在の対話言語を使い、Wikiページとログはその知識ベース自身の `language` を使います。
 
 ## 主なコマンド
 
@@ -121,6 +124,8 @@ RAG方式とWiki方式の長所・短所を比較して
 | --- | --- |
 | `/wiki help` | 利用できるコマンドと使い方を表示 |
 | `/wiki init` | 知識ベースを作成・登録 |
+| `/wiki language` | 現在の対話言語を表示 |
+| `/wiki language <zh|en|ja|es|fr|ko>` | UIの対話言語と今後作成する知識ベースの既定言語を変更 |
 | `/wiki ingest` | 新しい資料を取り込む（Markdown、PDF、画像） |
 | `/wiki query <question>` | 知識ベースに基づいて回答 |
 | `/wiki lint` | 知識ベースの健全性と整合性を確認 |
@@ -151,13 +156,13 @@ Markdown形式の知識ベースを[Obsidian](https://obsidian.md/)で直接開�
 
 推奨プラグイン：
 
-- **Front Matter Title** — frontmatterのタイトルをグラフのノードに表示（設定済み）
+- **Front Matter Title** — frontmatterのタイトルをグラフのノードに表示（設定済み。タイトル言語は知識ベースの内容言語に従います）
 - **Dataview** — frontmatterを使ったメタデータ検索
 - **Web Clipper** — ブラウザから記事を`raw/`へ保存
 
 ## OpenClaw（Web）
 
-OpenClawでも利用できますが、追加設定なしですぐに使えるわけではありません。Skillファイルと知識ベースをOpenClawから参照できる場所に置き、`registries.json`のパスを合わせ、OpenClawのMemoryに自動収録ルールを設定する必要があります。WeChat記事リンクなどを自動で取り込むには、リンクを開いてPDF化・保存できるブラウザ操作ツール（例：Playwright）やダウンロード手段もOpenClaw環境で利用可能にしておく必要があります。
+OpenClawでも利用できますが、追加設定なしですぐに使えるわけではありません。Skillファイルと知識ベースをOpenClawから参照できる場所に置き、`registries.json`のパスを合わせ、OpenClawのMemoryに自動収録ルールを設定する必要があります。`settings.json` はローカル環境ごとの設定であり、Claude CodeのグローバルインストールとOpenClaw環境は対話言語などの設定をそれぞれ保存します。複数マシン間で自動同期されるわけではありません。WeChat記事リンクなどを自動で取り込むには、リンクを開いてPDF化・保存できるブラウザ操作ツール（例：Playwright）やダウンロード手段もOpenClaw環境で利用可能にしておく必要があります。
 
 ![OpenClawでリンクを送って知識ベースに取り込む例](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 

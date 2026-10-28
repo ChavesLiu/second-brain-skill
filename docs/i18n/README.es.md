@@ -63,6 +63,7 @@ Clona el repositorio, copia el Skill al directorio global de Claude Code e insta
 ```bash
 git clone https://github.com/ChavesLiu/second-brain-skill.git
 cp -r second-brain-skill/skills/wiki ~/.claude/skills/wiki
+# Al actualizar una instalación existente, no sobrescribas settings.json ni registries.json locales
 pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 ```
 
@@ -72,7 +73,9 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 /wiki init
 ```
 
-Sigue las indicaciones para elegir la ruta, el nombre y el idioma del contenido que generará la wiki. Actualmente la inicialización permite `zh` (chino) o `en` (inglés); las traducciones del README no añaden soporte para generar contenido en otros idiomas.
+La primera vez que uses cualquier función de `/wiki`, el Skill preguntará una sola vez el idioma de interacción predeterminado (`zh` / `en` / `ja` / `es` / `fr` / `ko`) y lo guardará como `interaction_language` en `<skill-dir>/settings.json`. En sesiones posteriores leerá esa configuración y no volverá a preguntar.
+
+`/wiki init` solo pregunta la ruta y el nombre de la base de conocimiento. Las bases nuevas usan el idioma de interacción actual como idioma de contenido. Las bases existentes conservan el `language` de `registries.json` y no se traducen automáticamente; las entradas antiguas sin `language` se tratan como `zh`.
 
 ### 3. Incorporar el primer material
 
@@ -98,7 +101,7 @@ El LLM lee el material, genera resúmenes, extrae entidades y conceptos y mantie
 Compara las ventajas y desventajas de RAG frente al enfoque Wiki
 ```
 
-También puedes preguntar en lenguaje natural. El LLM utiliza el conocimiento acumulado para relacionar información y responder.
+También puedes preguntar en lenguaje natural. El LLM utiliza el conocimiento acumulado para relacionar información y responder. Las interacciones de UI y las respuestas usan el idioma de interacción actual; las páginas y registros de la wiki usan el `language` propio de esa base.
 
 ## Comandos principales
 
@@ -106,6 +109,8 @@ También puedes preguntar en lenguaje natural. El LLM utiliza el conocimiento ac
 | --- | --- |
 | `/wiki help` | Mostrar la ayuda y la lista de comandos disponibles |
 | `/wiki init` | Crear y registrar una base de conocimiento |
+| `/wiki language` | Mostrar el idioma de interacción actual |
+| `/wiki language <zh|en|ja|es|fr|ko>` | Cambiar el idioma de la UI y el idioma predeterminado de nuevas bases |
 | `/wiki ingest` | Incorporar materiales (Markdown, PDF, imágenes) |
 | `/wiki query <pregunta>` | Responder usando la base de conocimiento |
 | `/wiki lint` | Comprobar la salud y coherencia de la wiki |
@@ -138,13 +143,13 @@ Abre la base de conocimiento Markdown en [Obsidian](https://obsidian.md/) para e
 
 Complementos recomendados:
 
-- **Front Matter Title** — Muestra títulos en los nodos del gráfico (preconfigurado)
+- **Front Matter Title** — Muestra títulos en los nodos del gráfico (preconfigurado; el idioma del título sigue el de la base de conocimiento)
 - **Dataview** — Consultas de metadatos mediante frontmatter
 - **Web Clipper** — Guarda artículos web en `raw/`
 
 ## OpenClaw (Web)
 
-Second Brain Skill también puede integrarse con OpenClaw para gestionar conocimiento mediante conversación, pero no funciona «de fábrica» solo por abrir OpenClaw. Debes instalar el Skill en el entorno de OpenClaw, sincronizar o exponer la base de conocimiento y registrar en su memoria las rutas y reglas de uso.
+Second Brain Skill también puede integrarse con OpenClaw para gestionar conocimiento mediante conversación, pero no funciona «de fábrica» solo por abrir OpenClaw. Debes instalar el Skill en el entorno de OpenClaw, sincronizar o exponer la base de conocimiento y registrar en su memoria las rutas y reglas de uso. `settings.json` es configuración local del entorno: la instalación global de Claude Code y el entorno de OpenClaw guardan por separado el idioma de interacción y ajustes relacionados; no hay sincronización automática entre máquinas.
 
 Con esa memoria configurada, OpenClaw puede reconocer materiales enviados por el usuario, guardarlos en `raw/` y lanzar la incorporación. Para enlaces web, como artículos de WeChat, el entorno también necesita herramientas de descarga o navegador (por ejemplo, Playwright) disponibles para que el LLM pueda abrir, guardar e incorporar el contenido.
 

@@ -78,6 +78,7 @@ git clone https://github.com/ChavesLiu/second-brain-skill.git
 
 # 将 Skill 复制到 Claude Code 全局目录
 cp -r second-brain-skill/skills/wiki ~/.claude/skills/wiki
+# 更新已有安装时，请不要覆盖本地的 settings.json 和 registries.json（个人本地配置）
 
 # 安装依赖
 pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
@@ -89,7 +90,9 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 /wiki init
 ```
 
-按提示选择知识库路径、名称和内容语言，即可创建知识库。当前初始化工作流定义的 Wiki 内容语言为 `zh`（中文）和 `en`（英文）；README 的翻译版本不代表新增知识库生成语言支持。
+首次使用任意 `/wiki` 功能时，Skill 会先询问一次默认交互语言（`zh` / `en` / `ja` / `es` / `fr` / `ko`），并写入 `<skill-dir>/settings.json` 的 `interaction_language`，之后跨会话读取，不再重复询问。
+
+`/wiki init` 只会询问知识库路径和名称；新知识库的内容语言默认使用当前交互语言。已有知识库继续保留 `registries.json` 中的 `language`，不会自动翻译；缺少 `language` 的旧库按 `zh` 处理。
 
 ### 3. 收录第一份素材
 
@@ -120,7 +123,7 @@ LLM 自动阅读素材、生成摘要页、提取实体和概念，并维护交�
 对比一下 RAG 和 Wiki 模式的优劣
 ```
 
-LLM 会基于已积累的知识库回答问题，并关联相关信息。
+LLM 会基于已积累的知识库回答问题，并关联相关信息。界面交互和回答使用当前交互语言；知识库页面与操作日志使用该知识库自己的 `language`。
 
 ## 核心命令
 
@@ -128,6 +131,8 @@ LLM 会基于已积累的知识库回答问题，并关联相关信息。
 |------|------|
 | `/wiki help` | 查看命令列表和使用说明 |
 | `/wiki init` | 创建并注册新知识库 |
+| `/wiki language` | 查看当前交互语言 |
+| `/wiki language <zh|en|ja|es|fr|ko>` | 修改界面交互语言，并作为以后新知识库的默认内容语言 |
 | `/wiki ingest` | 收录新素材（支持 Markdown、PDF、图片） |
 | `/wiki query <问题>` | 基于知识库回答问题 |
 | `/wiki lint` | 检查知识库健康状态和一致性 |
@@ -168,7 +173,7 @@ Second Brain Skill 生成基于 Markdown 的知识库，可以直接使用 [Obsi
 
 推荐插件：
 
-- **Front Matter Title** — 图谱节点显示中文标题（项目已预置配置）。
+- **Front Matter Title** — 图谱节点显示页面标题（项目已预置配置，标题语言跟随知识库内容语言）。
 - **Dataview** — 基于 frontmatter 查询元数据。
 - **Web Clipper** — 将网页文章一键裁剪到 `raw/`。
 
@@ -176,7 +181,7 @@ Second Brain Skill 生成基于 Markdown 的知识库，可以直接使用 [Obsi
 
 Second Brain Skill 也可以与 OpenClaw 集成，实现对话式知识管理。
 
-让 OpenClaw 能访问 Skill 和知识库，并在 Memory 中配置知识库路径及自动收录规则后，可以通过对话收录素材，无需每次输入命令。
+让 OpenClaw 能访问 Skill 和知识库，并在 Memory 中配置知识库路径及自动收录规则后，可以通过对话收录素材，无需每次输入命令。`settings.json` 属于本地环境配置：Claude Code 全局安装与 OpenClaw 环境会各自保存交互语言等设置，不会自动在多台机器间同步。
 
 例如，发送一个微信公众号文章链接；如果 OpenClaw 环境具备所需的浏览器或下载工具（如 Playwright），LLM 可以尝试下载内容、保存到 `raw/` 并执行收录。这需要额外配置，并非只设置知识库路径就能开箱即用。
 

@@ -63,6 +63,7 @@ Clonez le dépôt, copiez le Skill dans le répertoire global de Claude Code, pu
 ```bash
 git clone https://github.com/ChavesLiu/second-brain-skill.git
 cp -r second-brain-skill/skills/wiki ~/.claude/skills/wiki
+# Lors d’une mise à jour, n’écrasez pas les fichiers locaux settings.json ni registries.json
 pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 ```
 
@@ -72,7 +73,9 @@ pip install -r ~/.claude/skills/wiki/scripts/requirements.txt
 /wiki init
 ```
 
-Suivez les instructions pour choisir le chemin, le nom et la langue du contenu que la wiki générera. L’initialisation propose actuellement `zh` (chinois) ou `en` (anglais) ; les traductions du README n’ajoutent pas de prise en charge d’autres langues pour le contenu généré.
+Lors de la première utilisation d’une fonction `/wiki`, le Skill demande une seule fois la langue d’interaction par défaut (`zh` / `en` / `ja` / `es` / `fr` / `ko`) et l’enregistre dans `interaction_language` dans `<skill-dir>/settings.json`. Les sessions suivantes lisent ce réglage et ne redemandent pas.
+
+`/wiki init` ne demande que le chemin et le nom de la base de connaissances. Les nouvelles bases utilisent la langue d’interaction actuelle comme langue de contenu. Les bases existantes conservent le champ `language` de `registries.json` et ne sont pas traduites automatiquement ; les anciennes entrées sans `language` sont traitées comme `zh`.
 
 ### 3. Importer un premier document
 
@@ -98,7 +101,7 @@ Le LLM lit le document, crée des résumés, extrait les entités et concepts et
 Compare les avantages et les limites du RAG et de l’approche Wiki
 ```
 
-Vous pouvez aussi poser vos questions en langage naturel. Le LLM relie les informations de la base pour répondre.
+Vous pouvez aussi poser vos questions en langage naturel. Le LLM relie les informations de la base pour répondre. Les interactions d’UI et les réponses utilisent la langue d’interaction actuelle ; les pages wiki et les journaux utilisent le `language` propre à cette base.
 
 ## Commandes principales
 
@@ -106,6 +109,8 @@ Vous pouvez aussi poser vos questions en langage naturel. Le LLM relie les infor
 | --- | --- |
 | `/wiki help` | Afficher l’aide et la liste des commandes disponibles |
 | `/wiki init` | Créer et enregistrer une base de connaissances |
+| `/wiki language` | Afficher la langue d’interaction actuelle |
+| `/wiki language <zh|en|ja|es|fr|ko>` | Modifier la langue de l’UI et la langue par défaut des futures bases |
 | `/wiki ingest` | Importer des documents (Markdown, PDF, images) |
 | `/wiki query <question>` | Répondre à partir de la base |
 | `/wiki lint` | Vérifier la santé et la cohérence du wiki |
@@ -138,13 +143,13 @@ Ouvrez directement la base Markdown dans [Obsidian](https://obsidian.md/) pour e
 
 Extensions recommandées :
 
-- **Front Matter Title** — Affiche les titres sur les nœuds du graphe (préconfiguré)
+- **Front Matter Title** — Affiche les titres sur les nœuds du graphe (préconfiguré ; la langue du titre suit celle de la base de connaissances)
 - **Dataview** — Interroge les métadonnées frontmatter
 - **Web Clipper** — Enregistre des articles dans `raw/`
 
 ## OpenClaw (Web)
 
-Second Brain Skill peut aussi s’intégrer à OpenClaw pour gérer les connaissances par conversation, mais il ne fonctionne pas « prêt à l’emploi » simplement en ouvrant OpenClaw. Il faut installer le Skill dans l’environnement OpenClaw, synchroniser ou exposer la base de connaissances, puis enregistrer les chemins et règles d’usage dans sa mémoire.
+Second Brain Skill peut aussi s’intégrer à OpenClaw pour gérer les connaissances par conversation, mais il ne fonctionne pas « prêt à l’emploi » simplement en ouvrant OpenClaw. Il faut installer le Skill dans l’environnement OpenClaw, synchroniser ou exposer la base de connaissances, puis enregistrer les chemins et règles d’usage dans sa mémoire. `settings.json` est une configuration locale à l’environnement : l’installation globale de Claude Code et l’environnement OpenClaw enregistrent séparément la langue d’interaction et les réglages associés ; aucune synchronisation automatique entre machines n’est promise.
 
 Une fois cette mémoire configurée, OpenClaw peut reconnaître les documents envoyés par l’utilisateur, les enregistrer dans `raw/` et lancer l’importation. Pour les liens web, par exemple des articles WeChat, l’environnement doit aussi fournir des outils de téléchargement ou de navigateur (comme Playwright) afin que le LLM puisse ouvrir, sauvegarder puis importer le contenu.
 
