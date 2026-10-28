@@ -39,7 +39,7 @@
 
 資料が構造化された知識ベースへ変わる流れをご覧ください。
 
-![help → init → ingest → queryの操作デモ](../images/guide.gif)
+![help → init → ingest → queryの操作デモ](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/guide.gif)
 
 ## 3層アーキテクチャ
 
@@ -147,7 +147,7 @@ OpenClawなどの会話型インターフェースでも自然に操作できま
 
 Markdown形式の知識ベースを[Obsidian](https://obsidian.md/)で直接開き、知識グラフ、バックリンク、ページ内容を閲覧できます。
 
-![Obsidianで知識グラフを閲覧する例](../images/obsidian.png)
+![Obsidianで知識グラフを閲覧する例](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/obsidian.png)
 
 推奨プラグイン：
 
@@ -159,7 +159,7 @@ Markdown形式の知識ベースを[Obsidian](https://obsidian.md/)で直接開�
 
 OpenClawでも利用できますが、追加設定なしですぐに使えるわけではありません。Skillファイルと知識ベースをOpenClawから参照できる場所に置き、`registries.json`のパスを合わせ、OpenClawのMemoryに自動収録ルールを設定する必要があります。WeChat記事リンクなどを自動で取り込むには、リンクを開いてPDF化・保存できるブラウザ操作ツール（例：Playwright）やダウンロード手段もOpenClaw環境で利用可能にしておく必要があります。
 
-![OpenClawでリンクを送って知識ベースに取り込む例](../images/openclaw-wiki.gif)
+![OpenClawでリンクを送って知識ベースに取り込む例](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 
 詳細は[ユーザーガイド（英語）— OpenClaw連携](../user-guide.en.md#openclaw-integration)を参照してください。
 

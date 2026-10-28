@@ -40,7 +40,7 @@ Tú seleccionas los materiales y planteas buenas preguntas. El LLM se encarga de
 
 Observa cómo los materiales se convierten en una base de conocimiento estructurada e interconectada.
 
-![Demostración del flujo help → init → ingest → query](../images/guide.gif)
+![Demostración del flujo help → init → ingest → query](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/guide.gif)
 
 ## Arquitectura de tres capas
 
@@ -134,7 +134,7 @@ También funciona con interfaces conversacionales como OpenClaw, siempre que el 
 
 Abre la base de conocimiento Markdown en [Obsidian](https://obsidian.md/) para explorar gráficos, enlaces entrantes y páginas.
 
-![Vista de grafo de la base de conocimiento en Obsidian](../images/obsidian.png)
+![Vista de grafo de la base de conocimiento en Obsidian](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/obsidian.png)
 
 Complementos recomendados:
 
@@ -148,7 +148,7 @@ Second Brain Skill también puede integrarse con OpenClaw para gestionar conocim
 
 Con esa memoria configurada, OpenClaw puede reconocer materiales enviados por el usuario, guardarlos en `raw/` y lanzar la incorporación. Para enlaces web, como artículos de WeChat, el entorno también necesita herramientas de descarga o navegador (por ejemplo, Playwright) disponibles para que el LLM pueda abrir, guardar e incorporar el contenido.
 
-![Demostración de incorporación automática con OpenClaw](../images/openclaw-wiki.gif)
+![Demostración de incorporación automática con OpenClaw](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 
 Consulta la [guía de usuario — Integración con OpenClaw](../user-guide.en.md#openclaw-integration) para ver los pasos detallados.
 

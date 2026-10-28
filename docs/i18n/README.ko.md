@@ -39,7 +39,7 @@
 
 원본 자료가 구조화되고 연결된 지식 베이스로 바뀌는 과정을 확인하세요.
 
-![help → init → ingest → query 작업 흐름 데모](../images/guide.gif)
+![help → init → ingest → query 작업 흐름 데모](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/guide.gif)
 
 ## 3계층 아키텍처
 
@@ -147,7 +147,7 @@ OpenClaw와 같은 대화형 인터페이스에서도 자연스럽게 사용할 
 
 Markdown 지식 베이스를 [Obsidian](https://obsidian.md/)에서 열어 그래프, 백링크, 페이지를 탐색할 수 있습니다.
 
-![Obsidian에서 지식 그래프를 보는 예](../images/obsidian.png)
+![Obsidian에서 지식 그래프를 보는 예](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/obsidian.png)
 
 권장 플러그인:
 
@@ -159,7 +159,7 @@ Markdown 지식 베이스를 [Obsidian](https://obsidian.md/)에서 열어 그�
 
 OpenClaw에서도 사용할 수 있지만, 바로 동작하는 것은 아닙니다. Skill 파일과 지식 베이스를 OpenClaw가 접근할 수 있는 위치에 두고, `registries.json`의 경로를 맞추며, OpenClaw Memory에 자동 수집 규칙을 설정해야 합니다. WeChat 기사 링크 등을 자동으로 수집하려면 링크를 열어 PDF로 저장할 수 있는 브라우저 조작 도구(예: Playwright)나 다운로드 수단도 OpenClaw 환경에서 사용할 수 있어야 합니다.
 
-![OpenClaw에 링크를 보내 지식 베이스로 수집하는 예](../images/openclaw-wiki.gif)
+![OpenClaw에 링크를 보내 지식 베이스로 수집하는 예](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 
 자세한 내용은 [사용자 가이드(영어) — OpenClaw 연동](../user-guide.en.md#openclaw-integration)을 참고하세요.
 

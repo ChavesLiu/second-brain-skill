@@ -55,7 +55,7 @@ You curate materials and ask good questions. The LLM handles the heavy lifting �
 
 See how raw materials become a structured, interconnected knowledge base.
 
-![Demo: help → init → ingest → query full workflow](docs/images/guide.gif)
+![Demo: help → init → ingest → query full workflow](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/guide.gif)
 
 ## Three-Layer Architecture
 
@@ -165,7 +165,7 @@ You can explore:
 - **Backlinks** — Navigate interconnected knowledge pages.
 - **Structured notes** — Browse summaries, analyses, and source references.
 
-![Obsidian knowledge graph view](docs/images/obsidian.png)
+![Obsidian knowledge graph view](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/obsidian.png)
 
 Recommended plugins:
 
@@ -181,7 +181,7 @@ Give OpenClaw access to the Skill and knowledge base, then configure the knowled
 
 For example, when you send a WeChat article link, the LLM can attempt to download it, save it to `raw/`, and ingest it if the OpenClaw environment provides the required browser or download tools (such as Playwright). This requires additional setup; configuring the knowledge base path alone is not sufficient.
 
-![OpenClaw auto-ingest demo](docs/images/openclaw-wiki.gif)
+![OpenClaw auto-ingest demo](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 
 See [User Guide — OpenClaw Integration](docs/user-guide.en.md#openclaw-integration) for details.
 

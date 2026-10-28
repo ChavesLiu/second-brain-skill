@@ -40,7 +40,7 @@ Vous choisissez les documents et posez de bonnes questions ; le LLM gère les r�
 
 Découvrez comment des documents deviennent une base de connaissances structurée et interconnectée.
 
-![Démonstration du flux help → init → ingest → query](../images/guide.gif)
+![Démonstration du flux help → init → ingest → query](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/guide.gif)
 
 ## Architecture en trois couches
 
@@ -134,7 +134,7 @@ Cette approche fonctionne aussi avec des interfaces conversationnelles comme Ope
 
 Ouvrez directement la base Markdown dans [Obsidian](https://obsidian.md/) pour explorer graphes, liens entrants et pages.
 
-![Vue graphe de la base de connaissances dans Obsidian](../images/obsidian.png)
+![Vue graphe de la base de connaissances dans Obsidian](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/obsidian.png)
 
 Extensions recommandées :
 
@@ -148,7 +148,7 @@ Second Brain Skill peut aussi s’intégrer à OpenClaw pour gérer les connaiss
 
 Une fois cette mémoire configurée, OpenClaw peut reconnaître les documents envoyés par l’utilisateur, les enregistrer dans `raw/` et lancer l’importation. Pour les liens web, par exemple des articles WeChat, l’environnement doit aussi fournir des outils de téléchargement ou de navigateur (comme Playwright) afin que le LLM puisse ouvrir, sauvegarder puis importer le contenu.
 
-![Démonstration d’importation automatique avec OpenClaw](../images/openclaw-wiki.gif)
+![Démonstration d’importation automatique avec OpenClaw](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 
 Voir le [guide utilisateur — Intégration OpenClaw](../user-guide.en.md#openclaw-integration) pour les étapes détaillées.
 

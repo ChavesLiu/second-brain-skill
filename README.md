@@ -54,7 +54,7 @@
 
 看看原始素材如何逐步转化为结构化、相互关联的知识库。
 
-![演示：help → init → ingest → query 完整流程](docs/images/guide.gif)
+![演示：help → init → ingest → query 完整流程](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/guide.gif)
 
 ## 三层架构
 
@@ -164,7 +164,7 @@ Second Brain Skill 生成基于 Markdown 的知识库，可以直接使用 [Obsi
 - **反向链接** — 在相互关联的知识页面间快速跳转。
 - **结构化笔记** — 浏览摘要、分析和素材引用。
 
-![Obsidian 知识图谱视图](docs/images/obsidian.png)
+![Obsidian 知识图谱视图](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/obsidian.png)
 
 推荐插件：
 
@@ -180,7 +180,7 @@ Second Brain Skill 也可以与 OpenClaw 集成，实现对话式知识管理。
 
 例如，发送一个微信公众号文章链接；如果 OpenClaw 环境具备所需的浏览器或下载工具（如 Playwright），LLM 可以尝试下载内容、保存到 `raw/` 并执行收录。这需要额外配置，并非只设置知识库路径就能开箱即用。
 
-![OpenClaw 自动收录演示](docs/images/openclaw-wiki.gif)
+![OpenClaw 自动收录演示](https://raw.githubusercontent.com/ChavesLiu/second-brain-skill/refs/heads/main/docs/images/openclaw-wiki.gif)
 
 详见 [使用手册 — 接入 OpenClaw](docs/user-guide.md#接入-openclaw)。
 
